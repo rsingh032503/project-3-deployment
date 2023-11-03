@@ -2,7 +2,7 @@ const express = require('express');
 
 // Create express app
 const app = express();
-const port = process.env.APP_PORT || 3000;
+const port = parseInt(process.env.APP_PORT, 10) || 3000;
 
 // middleware 
 const cors = require('cors');
@@ -21,37 +21,37 @@ app.set("view engine", "ejs");
 // });
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Server is listening at http://localhost:${port}`);
 });
 
 
 // get ALL credentials
-app.get('/credentials', (req, res) => {
-    pool.query('SELECT * FROM credentials;')
-        .then(query_res => {
-            const credentials = query_res.rows;
-            const data = { credentials };
-            res.json(data);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ error: 'Server error' });
-        });
-});
+// app.get('/credentials', (req, res) => {
+//     pool.query('SELECT * FROM credentials;')
+//         .then(query_res => {
+//             const credentials = query_res.rows;
+//             const data = { credentials };
+//             res.json(data);
+//         })
+//         .catch(err => {
+//             console.error(err);
+//             res.status(500).json({ error: 'Server error' });
+//         });
+// });
 
 // get ALL customers
-app.get('/customers', (req, res) => {
-    pool.query('SELECT * FROM customer;')
-        .then(query_res => {
-            const customers = query_res.rows;
-            const data = { customers };
-            res.json(data);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ error: 'Server error' });
-        });
-});
+// app.get('/customers', (req, res) => {
+//     pool.query('SELECT * FROM customer;')
+//         .then(query_res => {
+//             const customers = query_res.rows;
+//             const data = { customers };
+//             res.json(data);
+//         })
+//         .catch(err => {
+//             console.error(err);
+//             res.status(500).json({ error: 'Server error' });
+//         });
+// });
 
 // Define a common function to get all records from a table
 function getAllFromTable(table, res) {
@@ -67,6 +67,15 @@ function getAllFromTable(table, res) {
 }
 
 // Create "GET all" routes for each table
+
+app.get('/credentials', (req, res) => {
+    getAllFromTable('credentials', res);
+});
+
+app.get('/customer', (req, res) => {
+    getAllFromTable('customer', res);
+});
+
 app.get('/customer_order_join_table', (req, res) => {
     getAllFromTable('customer_order_join_table', res);
 });
