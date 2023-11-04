@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 // import reactLogo from './assets/react.svg';
 // import viteLogo from '/vite.svg';
-import { images } from './images.js'; // path to the images.js file
-import './MenuBoard.css';
-import './index.css';
+import { images } from '../images.js'; // path to the images.js file
+import '../styles/MenuBoard.css';
+import '../styles/index.css';
 
 function MenuBoard() {
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   // const [credentialsData, setCredentialsData] = useState(null);
   // const [customersData, setCustomersData] = useState(null);
   const [menuItemsData, setMenuItemsData] = useState(null);
