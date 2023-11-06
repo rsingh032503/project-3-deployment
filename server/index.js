@@ -62,7 +62,7 @@ function getAllFromTable(table, res) {
         })
         .catch(err => {
             console.error(err);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'Error getting data from server' });
         });
 }
 
@@ -151,4 +151,92 @@ app.put('/ingredient/:name', async (req, res) => {
       console.error(err);
       res.status(500).json('Error updating ingredient');
     }
-  });
+});
+
+
+function getTotal(items) {
+    let total = 0.0;
+    for (const item of items) {
+        total += item.price;
+    }
+    return total;
+}
+
+// Submits an order
+app.post('/submitOrder', async (req, res) => {
+    const items = req.body.items;
+    const customer = req.body.customer;
+  
+    try {
+        // Get the next order ID
+        const orderIdRes = await pool.query('SELECT MAX(id) FROM order_table');
+        const orderId = orderIdRes.rows[0].max + 1;
+
+        // Get the next menu item order join ID
+        const menuOrderJoinIdRes = await pool.query('SELECT MAX(id) FROM menu_item_order_join_table');
+        const menuOrderJoinId = menuOrderJoinIdRes.rows[0].max + 1;
+
+        // Get the next customer order join ID
+        const customerOrderJoinIdRes = await pool.query('SELECT MAX(id) FROM customer_order_join_table');
+        const customerOrderJoinId = customerOrderJoinIdRes.rows[0].max + 1;
+    
+        // Get the ingredients needed for every menu item
+        const ingredientRes = await pool.query('SELECT * FROM menu_item, ingredient_menu_item_join_table WHERE id=menu_item_id AND id = ANY($1) ORDER BY id', [items.map(item => item.id)]);
+        const ingredients = ingredientRes.rows;
+
+        // Create a map to store the total quantity needed for each ingredient
+        const ingredientMap = {};
+        for (const ingredient of ingredients) {
+            const ingredientId = ingredient.ingredient_id;
+            const quantity = ingredient.quantity;
+            if (ingredientMap[ingredientId]) {
+                ingredientMap[ingredientId] += quantity;
+            } else {
+                ingredientMap[ingredientId] = quantity;
+            }
+        }
+    
+        // TODO: Check to make sure there are enough ingredients
+        const ingredientQuantities = await pool.query('SELECT * FROM ingredient');
+        for (const ingredient of ingredientQuantities.rows) {
+            const ingredientId = ingredient.id;
+            const ingredientQuantity = ingredient.quantity;
+            if (ingredientMap[ingredientId]) {
+                ingredientMap[ingredientId] = ingredientQuantity - ingredientMap[ingredientId];
+                if (ingredientMap[ingredientId] < 0) {
+                    throw new Error('Not enough ingredients to fulfill order');
+                }
+            }
+        }
+    
+        // TODO: If there are enough ingredients, subtract them from their respective stock
+        for (const ingredientId in ingredientMap) {
+            if (ingredientMap[ingredientId] >= 0) {
+                await pool.query('UPDATE ingredient SET quantity = $1 WHERE id = $2', [ingredientMap[ingredientId], ingredientId]);
+            }    
+        }
+    
+        // Execute the query for the order table
+        await pool.query('INSERT INTO order_table (id, total, date) VALUES ($1, $2, $3)', [orderId, getTotal(items), new Date()]);
+    
+        // Fill the menu item order join table
+        for (const item of items) {
+            await pool.query('INSERT INTO menu_item_order_join_table (id, menu_item_id, order_id) VALUES ($1, $2, $3)', [menuOrderJoinId, item.id, orderId]);
+        }
+    
+        // Check to see if the customer is a new customer
+        const customerRes = await pool.query('SELECT * FROM customer WHERE name = $1 AND email = $2', [customer.name, customer.email]);
+        if (customerRes.rowCount === 0) {
+            // If the customer is new, add them to the customer table
+            await pool.query('INSERT INTO customer (id, name, email) VALUES ($1, $2, $3)', [customer.id, customer.name, customer.email]);
+        }
+    
+        // Add the order customer relation to the join table
+        await pool.query('INSERT INTO customer_order_join_table (id, order_id, customer_id) VALUES ($1, $2, $3)', [customerOrderJoinId, orderId, customer.id]);
+    
+        res.json({ message: 'Order submitted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
