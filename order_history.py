@@ -1,7 +1,7 @@
 import datetime as dt
 import numpy as np
 import random as rand
-import pymysql as sql
+import psycopg2 as sql
 
 class order:
     id = dt.datetime.now()
@@ -9,6 +9,8 @@ class order:
     total = -1
     customer_id = 0
     date_placed = dt.datetime.now()
+    items = []
+    quantities = []
 
     def __init__(self,i,t_id,to,c_id,d_pl):
         self.id = i
@@ -17,27 +19,88 @@ class order:
         self.customer_id = c_id
         self.date_placed = d_pl
 
+    def add_menu_item(self,item):
+        if(item in self.items):
+            self.quantities[self.items.index(item)] += 1
+        else:
+            self.items += [item]
+            self.quantities += [1]
+
+
 
 class menuItem:
     id = -1
     price = 5.0
-    order_id = -1
-    ingredient_table_id = 0
+    name = ""
 
-    def menuItem(self,i,p, o_id):
+    def __init__(self,i,p,n):
         self.id = i
         self.price = p
-        self.order_id = o_id
+        self.name = n
+
+class Customer:
+    id = -1
+    name = ""
+    email = ""
+    orders = []
+
+    def __init__(self,i,n,e):
+        self.id = i
+        self.name = n
+        self.email = e
+        self.orders = []
+
+    def add_order(self,order):
+        self.orders += [order]
+
+
+print("establishing connection")
+connection = sql.connect(host='csce-315-db.engr.tamu.edu',
+                             user='csce315_909_bat2492',
+                             password='BT2415',
+                             database='csce315331_09m_db')
+print("established connection")
+with connection:
+    with connection.cursor() as cursor:
+
+        query = "Truncate table menu_item_order_join_table;"
+        cursor.execute(query)
+
+        query = "Truncate table customer_order_join_table;"
+        cursor.execute(query)
+
+        query = "Truncate table order_table CASCADE;"
+        cursor.execute(query)
+
+    connection.commit()
+
+    with connection.cursor() as cursor:
+        query = "Select * from menu_item;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        
+    menu_items = result
+    with connection.cursor() as cursor:
+        query = "Select * from customer"
+        cursor.execute(query)
+        result = cursor.fetchall()
+    
+    customers = result
+
+for i in range(len(customers)):
+    print(customers[i])
+    customers[i] = Customer(customers[i][0],customers[i][1],customers[i][2])
+
+for i in range(len(menu_items)):
+    print(menu_items[i])
+    menu_items[i] = menuItem(menu_items[i][0],menu_items[i][1],menu_items[i][2])
 
 
 
-order_file = open("orders.csv","wt")
-order_file.write("id,totalprice,date_placed\n")
-join_table_file = open("join_table.csv","wt")
-join_table_file.write("Order_ID,Menu_item\n")
+
+#order_file.write("id,totalprice,date_placed\n")
+#join_table_file.write("Order_ID,Menu_item\n")
 orders = []
-menu_item_order_join = []
-menu_item_prices = []
 times = np.linspace(11,22.5,24)
 weights = {"monday"   : [1,1,2,2,4,4,5,5,9,9,5,5,3,3,3,3,5,5,9,9,7,7,4,4],
            "tuesday"  : [1,1,2,2,3,3,5,5,7,7,4,4,4,4,5,5,10,10,14,14,11,11,4,4],
@@ -49,54 +112,57 @@ weights = {"monday"   : [1,1,2,2,4,4,5,5,9,9,5,5,3,3,3,3,5,5,9,9,7,7,4,4],
 
 days_in_month = {1:31,2:28,3:31,4:30,5:31,6:30,7:31,8:31,9:30,10:31,11:30,12:31}
 
-total = 1000000.0
+total = 1100000.0
+num_orders = 20000
 date_year = dt.datetime.now().year - 1
 date_month = dt.datetime.now().month
 date_day = dt.datetime.now().day
 
-print(date_year,type(date_year))
-print(date_month,type(date_month))
-print(date_day,type(date_day))
-order_id = 0
 
+order_id = 0    
+
+
+average_item_price = 0.0
+for item in menu_items:
+    average_item_price += item.price / len(menu_items)
+
+total_items_ordered = total / average_item_price
+average_items_per_order = total_items_ordered / num_orders
+num_orders_per_day = num_orders / 365
+
+print(f"average item price: {average_item_price}")
+print(f"average items per order: {average_items_per_order}")
+print(f"num orders per day: {num_orders_per_day}")
 
 for week in range(52):
     for day in weights:
-        num_orders = rand.randint(200,300)
-        num_items = rand.randint(10,15)
+        day_orders = rand.randint((num_orders_per_day*.99)//1,(num_orders_per_day*1.3)//1)
+        day_items = rand.randint((average_items_per_order*.99)//1,(average_items_per_order*1.3)//1)
         if (week == 44 or week == 15) and day == "friday":
-            num_orders = rand.randint(600,1000)
-            num_items = rand.randint(20,30)
-        for order_num in range(num_orders):
-
+            day_orders = rand.randint((num_orders_per_day*1.3)//1,(num_orders_per_day*1.5)//1)
+            day_items = rand.randint((average_items_per_order*1.3)//1,(average_items_per_order*1.5)//1)
+        
+        for order_num in range(day_orders):
+            customer = customers[rand.randint(0,len(customers)-1)]
             order_time = rand.choices(times,weights=weights[day],k=1)
             order_hour = np.int_(order_time[0])
             order_minute = np.int_((order_time[0] % 1) * 60)
             order_second = dt.datetime.now().second
             order_microsecond = dt.datetime.now().microsecond
 
-            #print(type(order_time),order_time)
-            #print(type(order_hour),order_hour)
-            #print(type(order_minute),order_minute)
-            #print(type(order_second),order_second)
-            #print(type(order_microsecond),order_microsecond)
-
             date = dt.datetime(date_year,date_month,date_day,order_hour,order_minute,order_second,order_microsecond)
             current_order = order(order_id,0,0.0,-1,date)
             order_id += 1
 
-            num_items = rand.randint(2,num_items)
-            for i in range(num_items):
-                menu_item = rand.randint(0,len(menu_item_prices)-1)
-                price = menu_item_prices[menu_item]
+            order_items = rand.randint((day_items*.9)//1,day_items)
+            for i in range(order_items):
+                menu_item = menu_items[rand.randint(0,len(menu_items)-1)]
+                price = menu_item.price
                 total -= price
                 current_order.total += price
-                if order_id in menu_item_order_join:
-                    menu_item_order_join[order_id] += 1
-                else:
-                    menu_item_order_join[order_id] = menu_item*1000
-            
+                current_order.add_menu_item(menu_item)
             orders += [current_order]
+            customer.add_order(current_order)
 
         date_day += 1
         if date_day > days_in_month[date_month]:
@@ -107,10 +173,56 @@ for week in range(52):
             else:
                 date_month += 1
 
-for o in orders:
-    order_file.write(f"{o.id},{o.total},{o.date_placed}\n")
+num_orders = 0
+for c in customers:
+    num_orders += len(c.orders)
 
-for order_id in menu_item_order_join:
-    join_table_file.write(f"{order_id},{menu_item_order_join[order_id]}\n")
+print(f"num orders via customers: {num_orders}")
+print(f"num orders via order list: {len(orders)}")
+order_file = open("tables/order_table.csv",'w+')
+order_item_join_file = open("tables/menu_item_order_join_table.csv",'w+')
+customer_order_join_file = open("tables/customer_order_join_file.csv",'w+')
 
-print(total)
+order_file.write(f"id,totalprice,date_placed\n")
+customer_order_join_file.write(f"orderid,customerid\n")
+order_item_join_file.write(f"menuitemid,orderid,quantity\n")
+
+
+finished_orders = 0
+with connection:
+    with connection.cursor() as cursor:
+        for c in customers:
+            for o in c.orders:
+                order_file.write(f"{o.id},{o.total},'{o.date_placed}'\n")
+                customer_order_join_file.write(f"{o.id},{c.id}\n")
+                
+
+                
+
+                for i in range(len(o.items)):
+                    #print(f"inserting menu item for order {finished_orders}")
+                    order_item_join_file.write(f"{o.items[i].id},{o.id},{o.quantities[i]}\n")
+                    
+                  
+                
+                finished_orders += 1
+                if(finished_orders % 1000 == 0):
+                    print(f"finished orders: {finished_orders}")
+        
+        
+        cursor.copy_from(order_file,'order_table',sep=',',columns=["id","totalprice","date_placed"])
+        cursor.copy_from(customer_order_join_file,'customer_order_join_table',sep=',',columns=["orderid","customerid"])
+        cursor.copy_from(order_item_join_file,'menu_item_order_join_table',sep=',',columns=["menuitemid","orderid","quantity"])
+        connection.commit()  
+            
+
+
+
+print(f"total remaining: {total}")
+
+"""
+Three commands to copy the files into table must be in tables folder when entering the db
+\copy order_table from 'order_table.csv' CSV HEADER;
+\copy customer_order_join_table (orderid,customerid) from 'customer_order_join_file.csv' CSV HEADER;
+\copy menu_item_order_join_table (menuitemid,orderid,quantity) from 'menu_item_order_join_table.csv' CSV HEADER;
+ """
