@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../styles/Cashier.css';
 
 function Cashier() {
   const [menuItems, setMenuItems] = useState([]);
@@ -25,10 +26,9 @@ function Cashier() {
       <div>
         <h3>Order Summary</h3>
         {orderSummary.map((item, index) => (
-          <div key={index}>
-            <p>{item.name}${item.price}    
-              <button onClick={() => removeFromOrder(index)}>Remove</button>
-            </p>
+          <div key={index} className="orderItem">
+            <p>{item.name} - ${item.price}</p>
+            <button onClick={() => removeFromOrder(index)}>Remove</button>
           </div>
         ))}
       </div>
