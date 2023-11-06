@@ -1,15 +1,5 @@
-/* Style the buttons in a grid */
-.item-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.OrderButtons {
+.orderItem {
     display: flex;
     justify-content: space-between;
-}
-  
-.OrderButtons button {
-    margin-right: 10px;
-}
+    margin-bottom: 10px;
+  }

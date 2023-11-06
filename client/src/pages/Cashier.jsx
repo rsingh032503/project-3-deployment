@@ -1,46 +1,45 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Cashier.css';
 
 function Cashier() {
-  const [items] = useState([
-    { id: 1, name: 'Item 1', price: 4.99},
-    { id: 2, name: 'Item 2', price: 5.99},
-    { id: 3, name: 'Item 3', price: 6.99},
-    // Add more items as needed
-  ]);
-  const [orders] = useState([
-    { id: 1, name: 'Item 1', price: 4.99},
-    { id: 3, name: 'Item 3', price: 6.99},
-    // Add more items as needed
-  ]);
+  const [menuItems, setMenuItems] = useState([]);
+  const [orderSummary, setOrderSummary] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/menu_item')
+      .then(response => response.json())
+      .then(data => setMenuItems(data.menu_item))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  function addToOrder(item) {
+    setOrderSummary(prevOrder => [...prevOrder, item]);
+  }
+
+  function removeFromOrder(index) {
+    setOrderSummary(prevOrder => prevOrder.filter((item, i) => i !== index));
+  }
 
   return (
     <div>
-      <h2>Cashier</h2>
-      <div className="ContentContainer">
-        <div className="MenuItemsList">
-          <h3>Order List</h3>
-          <ul>
-            {orders.map((order) => (
-              <li key={order.id}>{order.name} - ${order.price}</li>
-            ))}
-          </ul>
-        </div>
-      
-        <div className="item-grid">
-          {items.map((item) => (
-            <button key={item.id}>
-              {item.name} - ${item.price}
-            </button>
-          ))}
-        </div>
+      <h2>Cashier View</h2>
+      <div>
+        <h3>Order Summary</h3>
+        {orderSummary.map((item, index) => (
+          <div key={index} className="orderItem">
+            <p>{item.name} - ${item.price}</p>
+            <button onClick={() => removeFromOrder(index)}>Remove</button>
+          </div>
+        ))}
       </div>
-
-      <div className="OrderButtons">
-        <button>Checkout</button>
-        <button>Clear</button>
+      <div>
+        <h3>Menu Items</h3>
+        {menuItems.map(item => (
+          <button key={item.id} onClick={() => addToOrder(item)}>
+            {item.name}
+          </button>
+        ))}
       </div>
-      
     </div>
   );
 }
