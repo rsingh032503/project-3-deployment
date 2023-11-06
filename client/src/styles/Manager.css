@@ -1,5 +1,41 @@
-.deleteMenuItemButton {
-    position: absolute;
-    bottom: 10px; /* Adjust the distance from the bottom as needed */
-    right: 10px; /* Adjust the distance from the right as needed */
-  }
+.ContentContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ingredientsTable {
+  border-collapse: collapse;
+  width: 100%;
+  margin-right: 20px;
+}
+
+.ingredientsTable th, .ingredientsTable td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.MenuItemsList {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.ButtonColumn {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.ButtonColumn button {
+  margin-bottom: 10px;
+}
+
+.ReportButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ReportButtons button {
+  margin-right: 10px;
+}
