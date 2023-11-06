@@ -237,6 +237,6 @@ app.post('/submitOrder', async (req, res) => {
         res.json({ message: 'Order submitted successfully' });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Server error while attempting to add order' });
     }
 });
