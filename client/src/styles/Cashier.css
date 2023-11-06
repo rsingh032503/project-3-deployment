@@ -3,3 +3,9 @@
     justify-content: space-between;
     margin-bottom: 10px;
   }
+
+.column {
+    float: left;
+    width: 50%;
+
+}

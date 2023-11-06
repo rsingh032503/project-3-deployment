@@ -23,7 +23,7 @@ function Cashier() {
   return (
     <div>
       <h2>Cashier View</h2>
-      <div>
+      <div class="column">
         <h3>Order Summary</h3>
         {orderSummary.map((item, index) => (
           <div key={index} className="orderItem">
@@ -32,7 +32,7 @@ function Cashier() {
           </div>
         ))}
       </div>
-      <div>
+      <div class="column">
         <h3>Menu Items</h3>
         {menuItems.map(item => (
           <button key={item.id} onClick={() => addToOrder(item)}>
