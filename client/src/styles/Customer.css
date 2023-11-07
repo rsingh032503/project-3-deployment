@@ -1,0 +1,12 @@
+.grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 2%;
+    row-gap: 2%;
+    width: 100%;
+}
+
+.item {
+    padding-top: 1rem;
+    padding-bottom: 0px;
+}
