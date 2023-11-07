@@ -6,7 +6,7 @@ function Cashier() {
   const [orderSummary, setOrderSummary] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/menu_item')
+    fetch('https://project-3-09m-server.onrender.com/menu_item')
       .then(response => response.json())
       .then(data => setMenuItems(data.menu_item))
       .catch(error => console.error('Error:', error));

@@ -12,7 +12,7 @@ function MenuBoard() {
   const [menuItemsData, setMenuItemsData] = useState(null);
 
   useEffect(() => {
-      fetch('http://localhost:3000/menu_item')
+      fetch('https://project-3-09m-server.onrender.com/menu_item')
           .then(response => {
               if (!response.ok) {
                   throw new Error('Network response was not ok');
