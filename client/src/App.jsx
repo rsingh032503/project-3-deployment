@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserTypeNavBar from './Router/UserTypeNavBar.jsx';
+import UserTypeNavBar from './router/UserTypeNavBar.jsx';
 import Customer from './pages/Customer';
 import MenuBoard from './pages/MenuBoard';
 import Cashier from './pages/Cashier';
