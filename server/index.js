@@ -8,7 +8,8 @@ const port = parseInt(process.env.APP_PORT, 10) || 3000;
 const cors = require('cors');
 
 
-app.use(cors())
+app.use(cors());
+app.use(express.json()); // req.body
 
 
 const pool = require('./db');
@@ -168,17 +169,27 @@ app.post('/submitOrder', async (req, res) => {
         // Get the next order ID
         const orderIdRes = await pool.query('SELECT MAX(id) FROM order_table');
         const orderId = orderIdRes.rows[0].max + 1;
+        console.log("Next Order id: ", orderId);
+
+        // Get the next customer ID
+        const customerIdRes = await pool.query('SELECT MAX(id) FROM customer');
+        const customerId = customerIdRes.rows[0].max + 1;
+        console.log("Next customer id: ", customerId);
 
         // Get the next menu item order join ID
         const menuOrderJoinIdRes = await pool.query('SELECT MAX(id) FROM menu_item_order_join_table');
         const menuOrderJoinId = menuOrderJoinIdRes.rows[0].max + 1;
+        console.log("Next menuOrderJoinId: ", menuOrderJoinId);
 
         // Get the next customer order join ID
         const customerOrderJoinIdRes = await pool.query('SELECT MAX(id) FROM customer_order_join_table');
         const customerOrderJoinId = customerOrderJoinIdRes.rows[0].max + 1;
+        console.log("Next customerOrderJoinId: ", customerOrderJoinId);
     
         // Get the ingredients needed for every menu item
-        const ingredientRes = await pool.query('SELECT * FROM menu_item, ingredient_menu_item_join_table WHERE id=menu_item_id AND id = ANY($1) ORDER BY id', [items.map(item => item.id)]);
+        // const ingredientRes = await pool.query('SELECT * FROM menu_item, ingredient_menu_item_join_table WHERE id=menu_item_id AND id = ANY($1) ORDER BY id', [items.map(item => item.id)]);
+        const ingredientRes = await pool.query('SELECT * FROM menu_item JOIN ingredient_menu_item_join_table ON menu_item.id = ingredient_menu_item_join_table.menu_item_id WHERE menu_item.id = ANY($1) ORDER BY menu_item.id', [items.map(item => item.id)]);
+        console.log(ingredientRes.rows);
         const ingredients = ingredientRes.rows;
 
         // Create a map to store the total quantity needed for each ingredient
@@ -214,22 +225,28 @@ app.post('/submitOrder', async (req, res) => {
         }
     
         // Execute the query for the order table
-        await pool.query('INSERT INTO order_table (id, total, date) VALUES ($1, $2, $3)', [orderId, getTotal(items), new Date()]);
+        // await pool.query('INSERT INTO order_table OVERRIDING SYSTEM VALUE (id, totalprice, date_placed) VALUES ($1, $2, $3)', [orderId, getTotal(items), new Date()]);
+        await pool.query('INSERT INTO order_table (id, totalprice, date_placed) VALUES ($1, $2, $3)', [orderId, getTotal(items), new Date()]);
+        // await pool.query('INSERT INTO order_table (totalprice, date_placed) VALUES ($1, $2)', [getTotal(items), new Date()]);
     
         // Fill the menu item order join table
         for (const item of items) {
-            await pool.query('INSERT INTO menu_item_order_join_table (id, menu_item_id, order_id) VALUES ($1, $2, $3)', [menuOrderJoinId, item.id, orderId]);
+            await pool.query('INSERT INTO menu_item_order_join_table (id, menuitemid, orderid) VALUES ($1, $2, $3)', [menuOrderJoinId, item.id, orderId]);
         }
     
         // Check to see if the customer is a new customer
         const customerRes = await pool.query('SELECT * FROM customer WHERE name = $1 AND email = $2', [customer.name, customer.email]);
         if (customerRes.rowCount === 0) {
             // If the customer is new, add them to the customer table
+            customer.id = customerId;
             await pool.query('INSERT INTO customer (id, name, email) VALUES ($1, $2, $3)', [customer.id, customer.name, customer.email]);
+        } else {
+            customer.id = customerRes.rows[0].id;
+            console.log(customer.id);
         }
     
         // Add the order customer relation to the join table
-        await pool.query('INSERT INTO customer_order_join_table (id, order_id, customer_id) VALUES ($1, $2, $3)', [customerOrderJoinId, orderId, customer.id]);
+        await pool.query('INSERT INTO customer_order_join_table (id, orderid, customerid) VALUES ($1, $2, $3)', [customerOrderJoinId, orderId, customer.id]);
     
         res.json({ message: 'Order submitted successfully' });
     } catch (err) {
