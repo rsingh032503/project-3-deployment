@@ -4,6 +4,7 @@ import Customer from './pages/Customer';
 import MenuBoard from './pages/MenuBoard';
 import Cashier from './pages/Cashier';
 import Manager from './pages/Manager';
+import Item from './pages/item';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/customer" element={<Customer />} />
         <Route path="/cashier" element={<Cashier />} />
         <Route path="/manager" element={<Manager />} />
+        <Route path="/item" element={<Item />} />
       </Routes>
     </Router>
   );
