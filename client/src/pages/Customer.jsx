@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 function Customer() {
     const [menuItems, setMenuItems] = useState([]);
+    const [menu_ingredient_join, setJoin] = useState([]);
     const [orderSummary, setOrderSummary] = useState([]);
     
     useEffect(() => {
@@ -12,10 +13,27 @@ function Customer() {
             .then(response => response.json())
             .then(data => setMenuItems(data.menu_item))
             .catch(error => console.error('Error:', error));
+        fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table')
+            .then(response => response.json())
+            .then(data => setJoin(data.ingredient_menu_item_join_table))
+            .catch(error => console.error("Error: ", error));
     }, []);
-    console.log(menuItems);
+    
+    
 
     function traverseToPage(item_id){
+        let ingredients = "";
+        let item_ingredients = menu_ingredient_join.filter( (join) => (join.menu_item_id == (item_id + 1)));
+        for(let i = 0; i < item_ingredients.length; i++){
+            let join = item_ingredients[i];
+            if(i == item_ingredients.length - 1){
+                ingredients += join.ingedient_id;
+            }
+            else{
+                ingredients += join.ingedient_id + ',';
+            }
+        }
+        sessionStorage.setItem("Current_Item_Ingredients",ingredients);
         sessionStorage.setItem("Current_Item",item_id);
     }
     

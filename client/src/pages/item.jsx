@@ -4,19 +4,30 @@ import { images } from '../images.js';
 import { Link } from 'react-router-dom';
 
 function Item(){
-    let [menuItems, setMenuItems] = useState([]);
+    const [menuItems, setMenuItems] = useState([]);
+    let [ingredients, setIngredients] = useState([]);
+    const [ingredient_item_join,setJoin] = useState([]);
     let [loading, setLoading] = useState(true);
     
     useEffect(() => {
         fetch('https://project-3-09m-server.onrender.com/menu_item')
             .then(response => response.json())
             .then(data => setMenuItems(data.menu_item))
+            .catch(error => console.error('Error:', error));
+        fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table')
+            .then(response => response.json())
+            .then(data => setJoin(data.ingredient_menu_item_join_table))
+            .catch(error => console.error("Error: ", error));
+        fetch('https://project-3-09m-server.onrender.com/ingredient')
+            .then(response => response.json())
+            .then(data => setIngredients(data.ingredient))
             .then(setLoading(false))
             .catch(error => console.error('Error:', error));
+        
     }, []);
     
     //console.log(loading)
-    if(loading || menuItems.length == 0){
+    if(loading || menuItems.length == 0 || ingredients.length == 0 || ingredient_item_join.length == 0){
         return(
             <div>
                 <p>Loading...</p>
@@ -24,8 +35,29 @@ function Item(){
         )
     }
     else{
-        console.log(menuItems);
+        //console.log(menuItems);
         let current_item = null;
+        let current_item_ingredients = [];
+        let ingredient_ids = sessionStorage.getItem("Current_Item_Ingredients").split(',');
+        ingredient_ids.map((str) => parseInt(str));
+        for(let ingredient of ingredients){
+            if(ingredient.id in ingredient_ids){
+                console.log(ingredient);
+                current_item_ingredients.push(ingredient);
+            }
+        }
+        for(let join of ingredient_item_join){
+            if(join.ingredient_id in ingredient_ids){
+                let index = -1;
+                for(let i = 0; i < current_item_ingredients.length; i++){
+                    if(current_item_ingredients[i].id == join.ingredient_id){
+                        current_item_ingredients[i].quantity = parseFloat(join.quantity);
+                    }
+                }
+                
+            }
+        }
+        console.log(current_item_ingredients);
 
         current_item = parseInt(sessionStorage.getItem("Current_Item"));
         if(!current_item){
@@ -53,17 +85,19 @@ function Item(){
                         <h3>Ingredients</h3>
                         <table>
                             <thead>
-                                <tr><td>{'Ingredient'}</td></tr>
-                                <tr><td>{'Quantity'}</td></tr>
+                                <tr>
+                                    <td>{'Ingredient'}</td>
+                                    <td>{'Quantity'}</td>
+                                </tr>
                             </thead>
                             
                             <tbody>
-                                {/*menu_item.ingredients.map((ingredient)=>(
+                                {current_item_ingredients.map((ingredient)=>(
                                     <tr key={ingredient.id}>
                                         <td>{ingredient.name}</td>
                                         <td>{ingredient.quantity}</td>
                                     </tr>
-                                    ))*/
+                                    ))
                                 }
                             </tbody>
                         </table>
