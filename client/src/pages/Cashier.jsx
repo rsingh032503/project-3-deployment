@@ -33,7 +33,7 @@ function Cashier() {
   }
 
   function submitOrder(items, customer) {
-    fetch('http://localhost:3000/submitOrder', {
+    fetch('https://project-3-09m-server.onrender.com/submitOrder', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
