@@ -22,19 +22,26 @@ function Customer() {
     
 
     function traverseToPage(item_id){
+        //console.log(item_id);
         let ingredients = "";
         let item_ingredients = menu_ingredient_join.filter( (join) => (join.menu_item_id == (item_id + 1)));
+        //console.log(item_ingredients);
         for(let i = 0; i < item_ingredients.length; i++){
             let join = item_ingredients[i];
+            //console.log(join);
+            //console.log(join.ingredient_id);
             if(i == item_ingredients.length - 1){
-                ingredients += join.ingedient_id;
+                ingredients += "" + join.ingredient_id.toString();
             }
             else{
-                ingredients += join.ingedient_id + ',';
+                ingredients += "" + join.ingredient_id.toString() + ',';
             }
         }
-        sessionStorage.setItem("Current_Item_Ingredients",ingredients);
-        sessionStorage.setItem("Current_Item",item_id);
+        return ingredients;
+    }
+
+    for(let item of menuItems){
+        item["ingredients"] = traverseToPage(item.id-1);
     }
     
     return (
@@ -43,11 +50,11 @@ function Customer() {
           <h3>Drinks:</h3>
           <div className="grid">
             {menuItems.map((item,index) => (
-                <Link key={item.id} to="/item" > 
-                    <button className="item" onClick={traverseToPage(index)}>
+                <Link key={item.id} to="/item" state={item}>
+                    <button className="item">   
                         <img src={images[item.name]} alt={item.name + " image"}/>
                         <p>{item.name}</p>
-                        <p>${item.price}</p>
+                        <p>${item.price}</p> 
                     </button>
                 </Link>
             ))}

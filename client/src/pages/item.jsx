@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/item.css';
 import { images } from '../images.js';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function Item(){
     const [menuItems, setMenuItems] = useState([]);
@@ -26,6 +26,7 @@ function Item(){
         
     }, []);
     
+    
     //console.log(loading)
     if(loading || menuItems.length == 0 || ingredients.length == 0 || ingredient_item_join.length == 0){
         return(
@@ -36,31 +37,12 @@ function Item(){
     }
     else{
         //console.log(menuItems);
-        let current_item = null;
-        let current_item_ingredients = [];
-        let ingredient_ids = sessionStorage.getItem("Current_Item_Ingredients").split(',');
-        ingredient_ids.map((str) => parseInt(str));
-        for(let ingredient of ingredients){
-            if(ingredient.id in ingredient_ids){
-                console.log(ingredient);
-                current_item_ingredients.push(ingredient);
-            }
-        }
-        for(let join of ingredient_item_join){
-            if(join.ingredient_id in ingredient_ids){
-                let index = -1;
-                for(let i = 0; i < current_item_ingredients.length; i++){
-                    if(current_item_ingredients[i].id == join.ingredient_id){
-                        current_item_ingredients[i].quantity = parseFloat(join.quantity);
-                    }
-                }
-                
-            }
-        }
-        console.log(current_item_ingredients);
+        const location = useLocation();
+        let item = location.state;
+        console.log(item);
+        
 
-        current_item = parseInt(sessionStorage.getItem("Current_Item"));
-        if(!current_item){
+        if(!item){
             return(
                 <div>
                     <p>There is no menu item selected. Please select one from the customer page</p>
@@ -69,19 +51,41 @@ function Item(){
             )
         }
         else{
+            let ingredient_ids = item.ingredients;
+            if(typeof ingredient_ids === 'string'){
+                console.log("splitting the ids");
+                ingredient_ids = ingredient_ids.split(',');
+            }
+            console.log(ingredient_ids);
+            ingredient_ids.map(id => parseInt(id));
+            let current_item_ingredients = [];
+            //console.log(current_item_ingredients);
+            for(let ingredient of ingredients){
+                if(ingredient.id in ingredient_ids){
+                    current_item_ingredients.push(ingredient);
+                }
+            }
+            for(let join of ingredient_item_join){
+                if(join.ingredient_id in ingredient_ids){
+                    for(let i = 0 ; i < current_item_ingredients.length; i++){
+                        if(current_item_ingredients[i].id == join.ingredient_id){
+                            current_item_ingredients[i].quantity = join.quantity;
+                        }
+                    }
+                }
+            }
             //console.log(current_item);
             //console.log(typeof(current_item));
-            let menu_item = menuItems[current_item];
             //console.log(menu_item);
 
             return (
                 <div>
-                    <h1>{menu_item.name}</h1>
+                    <h1>{item.name}</h1>
                     <div className="column">
-                        <img src={images[menu_item.name]} alt={menu_item.name + " image"}/>
+                        <img src={images[item.name]} alt={item.name + " image"}/>
                     </div>
                     <div className="column">
-                        <h3>Price: ${menu_item.price}</h3>
+                        <h3>Price: ${item.price}</h3>
                         <h3>Ingredients</h3>
                         <table>
                             <thead>
