@@ -1,3 +1,10 @@
+#root {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
 .grid {
     display: grid;
     grid-template-columns: auto auto auto;

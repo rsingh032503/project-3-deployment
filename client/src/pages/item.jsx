@@ -83,6 +83,7 @@ function Item(){
                     <h1>{item.name}</h1>
                     <div className="column">
                         <img src={images[item.name]} alt={item.name + " image"}/>
+                        <button>Add To Cart</button>
                     </div>
                     <div className="column">
                         <h3>Price: ${item.price}</h3>
