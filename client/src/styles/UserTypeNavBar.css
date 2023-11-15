@@ -4,13 +4,22 @@
     align-items: center;
     background-color: #f8f8f8;
     padding: 10px;
-  }
+    width: 96%;
+}
   
-  .navbar a {
+.navbar a {
     text-decoration: none;
     color: black;
-  }
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+}
   
-  .navbar a:hover {
+.navbar a:hover {
     color: blue;
-  }
+}
+
+.active{
+    background-color: #bbb;
+}
