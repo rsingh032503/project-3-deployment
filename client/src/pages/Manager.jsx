@@ -1,39 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import '../styles/Manager.css';
 
 function Manager() {
   const [menuItems, setMenuItems] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [selectedingredientName, setSelectedIngredientName] = useState('');
+  const [selectedPrice, setSelectedPrice] = useState('');
+  const [selectedQuantity, setSelectedQuantity] = useState('');
 
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
       .then(response => response.json())
       .then(data => setMenuItems(data.menu_item))
       .catch(error => console.error('Error:', error));
-    
+
     fetch('https://project-3-09m-server.onrender.com/ingredient')
       .then(response => response.json())
       .then(data => setIngredients(data.ingredient))
       .catch(error => console.error('Error:', error));
   }, []);
 
-  const handleMenuItemDelete = (name) => {
-    axios
-    .delete(`/menu_item/${name}`)
-    .then((response) => {
-      if (response.status === 200) {
-        // If the deletion is successful, update the state to reflect the changes
-        const updatedItems = menuItems.filter(item => item.name !== name);
-        setMenuItems(updatedItems);
-      } else {
-        console.error('Error deleting menu item');
-      }
-    })
-    .catch((error) => {
-      console.error('Error deleting menu item:', error);
-    });
+  const handleMenuItemDelete = async (name) => {
+    // axios
+    // .delete(`https://project-3-09m-server.onrender.com/menu_item/${name}`)
+    // .then((response) => {
+    //   if (response.status === 200) {
+    //     // If the deletion is successful, update the state to reflect the changes
+    //     const updatedItems = menuItems.filter(item => item.name !== name);
+    //     setMenuItems(updatedItems);
+    //   } else {
+    //     console.error('Error deleting menu item');
+    //   }
+    // })
+    // .catch((error) => {
+    //   console.error('Error deleting menu item:', error);
+    // });
+    
   };
+
+  function handleIngredientItemAdd(name, price, quantity) {
+    try{
+      const id = 21;
+      const threshold = 50;
+      const body = JSON.stringify({id, quantity, price, name, threshold});
+
+      const response = fetch('https://project-3-09m-server.onrender.com/ingredient', {
+        method: "POST",
+        mode: 'cors',
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+
+      if (response.ok) {
+        console.log('Ingredient added successfully');
+      } else {
+        console.error('Error adding ingredient:', response.statusText);
+      }
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
+
 
 
   return (
@@ -59,9 +88,41 @@ function Manager() {
 
         <div className="ButtonColumn">
           <button>Restock Ingredient</button>
-          <button>Add Ingredient</button>
+          <button onClick={handleIngredientItemAdd.bind(this, selectedingredientName, selectedPrice, selectedQuantity)}>Add Ingredient</button>
           <button>Update Ingredient</button>
           <button>Delete Ingredient</button>
+        </div>
+
+        <div className="ingredientColumn">
+            <div className="ingredientTextboxes">
+              <label className="TextboxLabel" htmlFor="ingredientNameTextbox">Ingredient Name</label>
+              <input
+                id="ingredientNameTextbox"
+                type="text"
+                value={selectedingredientName}
+                onChange={e => setSelectedIngredientName(e.target.value)}
+              />
+            </div>
+
+          <div className="PriceTextboxes">
+            <label className="TextboxLabel" htmlFor="PriceTextbox">Price</label>
+            <input
+              id="PriceTextbox"
+              type="text"
+              value={selectedPrice}
+              onChange={e => setSelectedPrice(e.target.value)}
+            />
+          </div>
+
+          <div className="QuantityTextboxes">
+            <label className="TextboxLabel" htmlFor="QuantityTextboxes">Quantity</label>
+            <input
+              id="QuantityTextbox"
+              type="text"
+              value={selectedQuantity}
+              onChange={e => setSelectedQuantity(e.target.value)}
+            />
+          </div>
         </div>
       </div>
       
@@ -78,7 +139,7 @@ function Manager() {
         <div className="ButtonColumn">
           <button>Add Menu Item</button>
           <button>Update Menu Item</button>
-          <button onClick={handleMenuItemDelete(menuItems.name)}>Delete Menu Item</button>
+          <button onClick={handleMenuItemDelete.bind(this,menuItems.name)}>Delete Menu Item</button>
         </div>
       </div>
 
