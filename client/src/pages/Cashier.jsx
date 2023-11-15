@@ -62,17 +62,19 @@ function Cashier() {
           </div>
         ))}
       </div>
-      <div className="column">
-        <div id="cashierMenuItems">
-          <h3>Menu Items</h3>
-          {menuItems.map(item => (
-            <button key={item.id} onClick={() => addToOrder(item)}>
-              {item.name}
-            </button>
-          ))}
+        <div className="column">
+            <div id="cashierMenuItems">
+                <h3>Menu Items</h3>
+                <div className="items">
+                    {menuItems.map(item => (
+                        <button key={item.id} onClick={() => addToOrder(item)}>
+                            {item.name}
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <button onClick={handleCheckout}>Checkout</button>
         </div>
-      <button onClick={handleCheckout}>Checkout</button>
-      </div>
     </div>
   );
 }
