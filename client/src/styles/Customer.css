@@ -5,15 +5,30 @@
     top: 0;
 }
 
+.Title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .grid {
     display: grid;
+    margin-left: auto;
+    margin-right: auto;
     grid-template-columns: auto auto auto;
     column-gap: 2%;
     row-gap: 2%;
     width: 100%;
 }
 
+.itemLink{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .item {
+    
     padding-top: 1rem;
     padding-bottom: 0px;
 }

@@ -52,16 +52,18 @@ function Cashier() {
 
   return (
     <div>
-      <h2>Cashier View</h2>
-      <div className="column">
-        <h3>Order Summary</h3>
-        {orderSummary.map((item, index) => (
-          <div key={index} className="orderItem">
-            <p>{item.name} - ${item.price}</p>
-            <button onClick={() => removeFromOrder(index)}>Remove</button>
-          </div>
-        ))}
-      </div>
+        <h2>Cashier View</h2>
+        <div className="column">
+            <h3>Order Summary</h3>
+            <div className="order_items">
+                {orderSummary.map((item, index) => (
+                    <div key={index} className="orderItem">
+                        <p>{item.name} - ${item.price}</p>
+                        <button onClick={() => removeFromOrder(index)}>Remove</button>
+                    </div>
+                ))}
+            </div>
+        </div>
         <div className="column">
             <div id="cashierMenuItems">
                 <h3>Menu Items</h3>
