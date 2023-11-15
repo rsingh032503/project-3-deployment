@@ -189,7 +189,7 @@ app.post('/submitOrder', async (req, res) => {
         // Get the ingredients needed for every menu item
         // const ingredientRes = await pool.query('SELECT * FROM menu_item, ingredient_menu_item_join_table WHERE id=menu_item_id AND id = ANY($1) ORDER BY id', [items.map(item => item.id)]);
         const ingredientRes = await pool.query('SELECT * FROM menu_item JOIN ingredient_menu_item_join_table ON menu_item.id = ingredient_menu_item_join_table.menu_item_id WHERE menu_item.id = ANY($1) ORDER BY menu_item.id', [items.map(item => item.id)]);
-        console.log(ingredientRes.rows);
+        //console.log(ingredientRes.rows);
         const ingredients = ingredientRes.rows;
 
         // Create a map to store the total quantity needed for each ingredient
@@ -230,8 +230,23 @@ app.post('/submitOrder', async (req, res) => {
         // await pool.query('INSERT INTO order_table (totalprice, date_placed) VALUES ($1, $2)', [getTotal(items), new Date()]);
     
         // Fill the menu item order join table
-        for (const item of items) {
-            await pool.query('INSERT INTO menu_item_order_join_table (id, menuitemid, orderid) VALUES ($1, $2, $3)', [menuOrderJoinId, item.id, orderId]);
+        // for (const item of items) {
+        //     await pool.query('INSERT INTO menu_item_order_join_table (id, menuitemid, orderid) VALUES ($1, $2, $3)', [menuOrderJoinId, item.id, orderId]);
+        // }
+        const itemsWithQuantity = [];
+        items.forEach(item => {
+            const existingItem = itemsWithQuantity.find(i => i.name === item.name);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                itemsWithQuantity.push({ ...item, quantity: 1 });
+            }
+        });
+        
+        let currentMenuOrderJoinId = menuOrderJoinId;
+        for (const item of itemsWithQuantity) {
+            await pool.query('INSERT INTO menu_item_order_join_table (id, menuitemid, orderid, quantity) VALUES ($1, $2, $3, $4)', [currentMenuOrderJoinId, item.id, orderId, item.quantity]);
+            currentMenuOrderJoinId++;
         }
     
         // Check to see if the customer is a new customer
@@ -242,7 +257,7 @@ app.post('/submitOrder', async (req, res) => {
             await pool.query('INSERT INTO customer (id, name, email) VALUES ($1, $2, $3)', [customer.id, customer.name, customer.email]);
         } else {
             customer.id = customerRes.rows[0].id;
-            console.log(customer.id);
+            console.log("Existing customer id: ", customer.id);
         }
     
         // Add the order customer relation to the join table
