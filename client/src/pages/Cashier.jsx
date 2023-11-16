@@ -28,7 +28,7 @@ function Cashier() {
       const customer = { name, email };
       submitOrder(orderSummary, customer);
     } else {
-      alert("Please enter your name and email to proceed with the checkout.");
+      alert("Please enter the customer's name and email to proceed with the checkout.");
     }
   }
 
