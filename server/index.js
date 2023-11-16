@@ -113,10 +113,15 @@ app.delete("/menu_item/:name", async (req, res) =>{
 
 //Adds an ingredient to the data
 app.post('/ingredient', async (req, res) => {
+
+    const name = req.body.name;
+    const price = req.body.price;
+    const quantity = req.body.quantity;
+    const id = red.body.id;
+    const threshold = req.body.threshold;
     try {
-      const { data_to_insert } = req.body; // Extract the data from the request body
-      const insertQuery = 'INSERT INTO ingredient VALUES ($1, $2, $3, $4)';
-      await pool.query(insertQuery, [data_to_insert.value1, data_to_insert.value2, data_to_insert.value3, data_to_insert.value4]);
+      const insertQuery = 'INSERT INTO ingredient VALUES ($1, $2, $3, $4, $5)';
+      await pool.query(insertQuery, [id, quantity, price, name, threshold]);
       res.json('Ingredient was added!');
     } catch (err) {
       console.error(err);

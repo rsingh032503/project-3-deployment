@@ -39,3 +39,16 @@
 .ReportButtons button {
   margin-right: 10px;
 }
+
+.ingredientColumn input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+.TextboxLabel{
+  display: inline-block;
+  margin-left: 15px;
+}
