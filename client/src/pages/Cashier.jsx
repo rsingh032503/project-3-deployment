@@ -7,6 +7,7 @@ function Cashier() {
 
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
+    // fetch('http://localhost:3000/menu_item')
       .then(response => response.json())
       .then(data => setMenuItems(data.menu_item))
       .catch(error => console.error('Error:', error));
@@ -21,8 +22,8 @@ function Cashier() {
   }
 
   function handleCheckout() {
-    const name = prompt("Please enter your name:");
-    const email = prompt("Please enter your email:");
+    const name = prompt("Please enter the customer's name:");
+    const email = prompt("Please enter the customer's email:");
   
     if (name && email) {
       const customer = { name, email };
@@ -34,6 +35,7 @@ function Cashier() {
 
   function submitOrder(items, customer) {
     fetch('https://project-3-09m-server.onrender.com/submitOrder', {
+    // fetch('http://localhost:3000/submitOrder', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
