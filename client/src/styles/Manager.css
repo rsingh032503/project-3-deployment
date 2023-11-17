@@ -21,6 +21,20 @@
   margin-right: 20px;
 }
 
+.MenuItemsList li {
+  cursor: pointer;
+  padding: 8px;
+  margin: 4px;
+  border: 1px solid #ccc;
+  list-style: none;
+  max-width: 500px;
+}
+
+.MenuItemsList li.selected {
+  background-color: #e1e1e1;
+  color: #333;
+}
+
 .ButtonColumn {
   display: flex;
   flex-direction: column;
@@ -48,7 +62,18 @@
   margin-left: 15px;
 }
 
-.TextboxLabel{
+.TextboxContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.TextboxLabel {
   display: inline-block;
   margin-left: 15px;
+}
+
+.CheckboxList {
+  display: flex;
+  flex-direction: column;
 }

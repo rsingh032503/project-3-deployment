@@ -46,11 +46,11 @@ function Customer() {
     
     return (
         <div>
-          <h2>Customer View</h2>
-          <h3>Drinks:</h3>
+          <h2 className='Title'>Customer View</h2>
+          <h3 className='DrinkTitle'>Drinks:</h3>
           <div className="grid">
             {menuItems.map((item,index) => (
-                <Link key={item.id} to="/item" state={item}>
+                <Link className="itemLink" key={item.id} to="/item" state={item}>
                     <button className="item">   
                         <img src={images[item.name]} alt={item.name + " image"}/>
                         <p>{item.name}</p>

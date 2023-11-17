@@ -8,10 +8,15 @@
     margin-right: 1rem;
     top: 0;
 }
+.order_items {
+    width: 80%;
+    float: left;
+}
+
 .orderItem {
     display: flex;
     justify-content: space-between;
-    margin-bottom: rem;
+    margin-bottom: 1rem;
   }
 
 .column {
