@@ -104,7 +104,7 @@ function Manager() {
   //Updates the ingredient "name" with new values price and quantity
   function handleIngredientItemUpdate(price, quantity, name) {
     try{
-
+    
       //Input validation
       if(price < 0 || quantity < 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
         console.log(typeof quantity);
