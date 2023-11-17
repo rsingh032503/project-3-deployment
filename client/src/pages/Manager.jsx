@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../styles/Manager.css';
 
 function Manager() {
@@ -7,6 +8,7 @@ function Manager() {
   const [selectedingredientName, setSelectedIngredientName] = useState('');
   const [selectedPrice, setSelectedPrice] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
+  const ingredientIDs = [];
 
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
@@ -20,42 +22,51 @@ function Manager() {
       .catch(error => console.error('Error:', error));
   }, []);
 
+  for(let i = 0; i < ingredients.length; i++){
+    ingredientIDs.push(ingredients[i].id);
+  }
+
   const handleMenuItemDelete = async (name) => {
-    // axios
-    // .delete(`https://project-3-09m-server.onrender.com/menu_item/${name}`)
-    // .then((response) => {
-    //   if (response.status === 200) {
-    //     // If the deletion is successful, update the state to reflect the changes
-    //     const updatedItems = menuItems.filter(item => item.name !== name);
-    //     setMenuItems(updatedItems);
-    //   } else {
-    //     console.error('Error deleting menu item');
-    //   }
-    // })
-    // .catch((error) => {
-    //   console.error('Error deleting menu item:', error);
-    // });
-    
+    axios
+    .delete(`https://project-3-09m-server.onrender.com/menu_item/${name}`)
+    .then((response) => {
+      if (response.status === 200) {
+        // If the deletion is successful, update the state to reflect the changes
+        const updatedItems = menuItems.filter(item => item.name !== name);
+        setMenuItems(updatedItems);
+      } else {
+        console.error('Error deleting menu item');
+      }
+    })
+    .catch((error) => {
+      console.error('Error deleting menu item:', error);
+    });
   };
 
+  //Creates a new ingredient when the add ingredient button is pressed
   function handleIngredientItemAdd(name, price, quantity) {
     try{
-      const id = 21;
+      //Input validation
+      if(price < 0 || quantity < 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
+        console.log(typeof quantity);
+        console.log("Invalid inputs");
+        return;
+      }
+      //Generate a new id and table values for a new ingredient
+      const id = Math.max(...ingredientIDs) + 1;
+      ingredientIDs.push(id);
       const threshold = 50;
       const body = JSON.stringify({id, quantity, price, name, threshold});
 
-      const response = fetch('https://project-3-09m-server.onrender.com/ingredient', {
+      fetch('https://project-3-09m-server.onrender.com/ingredient', {
         method: "POST",
-        mode: 'cors',
         headers: {"Content-Type": "application/json" },
         body: body
       })
-
-      if (response.ok) {
-        console.log('Ingredient added successfully');
-      } else {
-        console.error('Error adding ingredient:', response.statusText);
-      }
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
     }
     catch(err){
       console.log("Error Message");
@@ -63,6 +74,76 @@ function Manager() {
     }
   }
 
+  //Deletes ingredient (name) after the select ingredient button is clicked
+  function handleIngredientItemDelete(name) {
+    try{
+      //Generate a new id and table values for a new ingredient
+      const body = JSON.stringify({name});
+      fetch('https://project-3-09m-server.onrender.com/ingredient', {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
+
+  //Updates the ingredient "name" with new values price and quantity
+  function handleIngredientItemUpdate(price, quantity, name) {
+    try{
+
+      //Input validation
+      if(price < 0 || quantity < 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
+        console.log(typeof quantity);
+        console.log("Invalid inputs");
+        return;
+      }
+
+      //Generate a new id and table values for a new ingredient
+      const body = JSON.stringify({price, quantity, name});
+      fetch('https://project-3-09m-server.onrender.com/ingredient', {
+        method: "PUT",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
+
+  //Restocks the ingredient "name" when the restock button is clicked
+  function handleIngredientItemRestock(quantity, name) {
+    try{
+      //Generate a new id and table values for a new ingredient
+      const body = JSON.stringify({quantity, name});
+      fetch('https://project-3-09m-server.onrender.com/ingredient', {
+        method: "PUT",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
 
 
   return (
@@ -87,10 +168,10 @@ function Manager() {
         </table>
 
         <div className="ButtonColumn">
-          <button>Restock Ingredient</button>
+          <button onClick={handleIngredientItemRestock.bind(this, selectedQuantity, selectedingredientName)}>Restock Ingredient</button>
           <button onClick={handleIngredientItemAdd.bind(this, selectedingredientName, selectedPrice, selectedQuantity)}>Add Ingredient</button>
-          <button>Update Ingredient</button>
-          <button>Delete Ingredient</button>
+          <button onClick={handleIngredientItemUpdate.bind(this, selectedPrice, selectedQuantity, selectedingredientName)}>Update Ingredient</button>
+          <button onClick={handleIngredientItemDelete.bind(this, selectedingredientName)}>Delete Ingredient</button>
         </div>
 
         <div className="ingredientColumn">
