@@ -4,9 +4,15 @@ import '../styles/Manager.css';
 function Manager() {
   const [menuItems, setMenuItems] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+
   const [selectedingredientName, setSelectedIngredientName] = useState('');
   const [selectedPrice, setSelectedPrice] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
+
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedMenuItemName, setSelectedMenuItemName] = useState('');
+  const [selectedMenuItemIngredients, setSelectedMenuItemIngredients] = useState([]);
+  const [selectedMenuItemPrice, setSelectedMenuItemPrice] = useState('');
 
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
@@ -35,7 +41,20 @@ function Manager() {
     // .catch((error) => {
     //   console.error('Error deleting menu item:', error);
     // });
-    
+  };
+
+  const handleMenuItemClick = (item) => {
+    // Update the state to store the selected item
+    setSelectedItem(item);
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { value } = e.target;
+    setSelectedMenuItemIngredients((prevIngredients) =>
+    prevIngredients.includes(value)
+        ? prevIngredients.filter((ingredient) => ingredient !== value)
+        : [...prevIngredients, value]
+    );
   };
 
   function handleIngredientItemAdd(name, price, quantity) {
@@ -62,8 +81,6 @@ function Manager() {
       console.log('Network error:', err.message);
     }
   }
-
-
 
   return (
     <div>
@@ -131,9 +148,45 @@ function Manager() {
           <h3>Menu Items</h3>
           <ul>
             {menuItems.map((item) => (
-              <li key={item.id}>{item.name}</li>
+              <li key={item.id} onClick={() => handleMenuItemClick(item)} className={selectedItem === item ? 'selected' : ''}
+              >{item.name}</li>
             ))}
           </ul>
+        </div>
+        
+        <div className="TextboxContainer">
+          <label className="TextboxLabel">Name</label>
+          <input
+            id="menuItemTextbox"
+            type="text"
+            value={selectedMenuItemName}
+            onChange={e => setSelectedMenuItemName(e.target.value)}
+          />
+        </div>
+
+        <div className="CheckboxList">
+          <label>Ingredients</label>
+          {ingredients.map((ingredient) => (
+            <label key={ingredient.id} className="CheckboxLabel">
+              <input
+                type="checkbox"
+                value={ingredient.name}
+                checked={selectedMenuItemIngredients.includes(ingredient.name)}
+                onChange={handleCheckboxChange}
+              />
+              {ingredient.name}
+            </label>
+          ))}
+        </div>
+
+        <div className="TextboxContainer">
+          <label className="TextboxLabel">Price</label>
+          <input
+            id="menuItemPriceTextbox"
+            type="text"
+            value={selectedMenuItemPrice}
+            onChange={e => setSelectedMenuItemPrice(e.target.value)}
+          />
         </div>
 
         <div className="ButtonColumn">
