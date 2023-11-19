@@ -279,3 +279,20 @@ app.post('/submitOrder', async (req, res) => {
         res.status(500).json({ error: 'Server error while attempting to add order' });
     }
 });
+
+//Gets the understocked ingredients
+app.get('/understocked', async (req, res) => {
+    try {
+        const understockedQuery = 'SELECT * FROM ingredient WHERE quantity < threshold';
+        const result = await pool.query(understockedQuery);
+        const understockedIngredients = result.rows;
+
+        res.json({ understockedIngredients });
+
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json('Error getting understocked ingredients');
+    }
+});
+

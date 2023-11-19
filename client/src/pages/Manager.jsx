@@ -32,6 +32,23 @@ function Manager() {
     ingredientIDs.push(ingredients[i].id);
   }
 
+  //Refresh the ingredients table 
+  const LoadIngredientTable = () => {
+    fetch('http://localhost:3000/ingredient')
+    .then(response => response.json())
+    .then(data => setIngredients(data.ingredient))
+    .catch(error => console.error('Error:', error));
+  };
+
+  //Refresh the menu item table
+  //ZAK USES THIS FUNCTION FOR REFRESHING YOUR MENU ITEM TABLES
+  const LoadMenuItemTable = () => {
+    fetch('https://project-3-09m-server.onrender.com/ingredient')
+    .then(response => response.json())
+    .then(data => setIngredients(data.ingredient))
+    .catch(error => console.error('Error:', error));
+  };
+
   const handleMenuItemDelete = async (name) => {
     axios
     .delete(`https://project-3-09m-server.onrender.com/menu_item/${name}`)
@@ -47,6 +64,20 @@ function Manager() {
     .catch((error) => {
       console.error('Error deleting menu item:', error);
     });
+  };
+
+  const handleMenuItemClick = (item) => {
+    // Update the state to store the selected item
+    setSelectedItem(item);
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { value } = e.target;
+    setSelectedMenuItemIngredients((prevIngredients) =>
+    prevIngredients.includes(value)
+        ? prevIngredients.filter((ingredient) => ingredient !== value)
+        : [...prevIngredients, value]
+    );
   };
 
   //Creates a new ingredient when the add ingredient button is pressed
@@ -71,6 +102,7 @@ function Manager() {
       })
       .then(response => response.json())
       .then(response=> {
+        LoadIngredientTable();
         console.log(response);
       })
     }
@@ -85,13 +117,14 @@ function Manager() {
     try{
       //Generate a new id and table values for a new ingredient
       const body = JSON.stringify({name});
-      fetch('https://project-3-09m-server.onrender.com/ingredient', {
+        fetch('https://project-3-09m-server.onrender.com/ingredient', {
         method: "DELETE",
         headers: {"Content-Type": "application/json" },
         body: body
       })
       .then(response => response.json())
       .then(response=> {
+        LoadIngredientTable();
         console.log(response);
       })
     }
@@ -121,6 +154,7 @@ function Manager() {
       })
       .then(response => response.json())
       .then(response=> {
+        LoadIngredientTable();
         console.log(response);
       })
     }
@@ -142,6 +176,7 @@ function Manager() {
       })
       .then(response => response.json())
       .then(response=> {
+        LoadIngredientTable();
         console.log(response);
       })
     }
@@ -150,7 +185,6 @@ function Manager() {
       console.log('Network error:', err.message);
     }
   }
-
 
   return (
     <div>
@@ -269,7 +303,7 @@ function Manager() {
       <div className="ReportButtons">
         <button>Sales Report</button>
         <button>Excess Report</button>
-        <button>Restock Report</button>
+        <button onClick={ e =>{ console.log("Restock Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button>
       </div>
       
     </div>
