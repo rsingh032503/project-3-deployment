@@ -44,7 +44,7 @@ function Manager() {
       const threshold = 50;
       const body = JSON.stringify({id, quantity, price, name, threshold});
 
-      const response = fetch('https://project-3-09m-server.onrender.com/ingredient', {
+      const response = fetch('http://localhost:3000/ingredient', { // const response = fetch('https://project-3-09m-server.onrender.com/ingredient', {
         method: "POST",
         mode: 'cors',
         headers: {"Content-Type": "application/json" },
