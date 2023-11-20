@@ -117,7 +117,7 @@ app.post('/ingredient', async (req, res) => {
     const name = req.body.name;
     const price = req.body.price;
     const quantity = req.body.quantity;
-    const id = red.body.id;
+    const id = req.body.id;
     const threshold = req.body.threshold;
     try {
       const insertQuery = 'INSERT INTO ingredient VALUES ($1, $2, $3, $4, $5)';
@@ -130,25 +130,30 @@ app.post('/ingredient', async (req, res) => {
   });
 
 //Deletes a ingredient based on the name that is provided
-app.delete("/ingredient/:name", async (req, res) =>{
+app.delete("/ingredient", async (req, res) =>{
     try{
-        const {name} = req.params;
-        const deleteTodo = await pool.query("DELETE FROM ingredient WHERE name = $1", [
-            name
-        ]);
-        res.json("Ingredient was deleted!")
+        const {name} = req.body;
+        pool.query(`DELETE FROM ingredient WHERE name = '${name}'`);
+        res.json("Ingredient was deleted!");
     }catch(err){
         console.log(err.message);
     }
 });
 
 //Updates ingredients based on the name that is provided
-app.put('/ingredient/:name', async (req, res) => {
+app.put('/ingredient', async (req, res) => {
     try {
-      const { name } = req.params; // Extract the ID from the URL
-      const { data_to_update } = req.body; // Extract the data to update from the request body
-      const updateQuery = 'UPDATE ingredient SET quantity = $1, restock_price = $2 WHERE name = $3';
-      await pool.query(updateQuery, [data_to_update.value1, data_to_update.value2, name]);
+      const price = req.body.price; 
+      const quantity  = req.body.quantity; 
+      const name = req.body.name;
+      let updateQuery;
+      if(price != undefined){
+        updateQuery = `UPDATE ingredient SET quantity = ${quantity}, restock_price = ${price} WHERE name = '${name}'`;
+      }
+      else{
+        updateQuery = `UPDATE ingredient SET quantity = ${quantity} WHERE name = '${name}'`;
+      }
+      await pool.query(updateQuery);
       res.json('Ingredient was udpated!');
     } catch (err) {
       console.error(err);
@@ -274,3 +279,20 @@ app.post('/submitOrder', async (req, res) => {
         res.status(500).json({ error: 'Server error while attempting to add order' });
     }
 });
+
+//Gets the understocked ingredients
+app.get('/understocked', async (req, res) => {
+    try {
+        const understockedQuery = 'SELECT * FROM ingredient WHERE quantity < threshold';
+        const result = await pool.query(understockedQuery);
+        const understockedIngredients = result.rows;
+
+        res.json({ understockedIngredients });
+
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json('Error getting understocked ingredients');
+    }
+});
+

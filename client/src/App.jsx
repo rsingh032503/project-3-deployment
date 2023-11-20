@@ -5,6 +5,7 @@ import MenuBoard from './pages/MenuBoard';
 import Cashier from './pages/Cashier';
 import Manager from './pages/Manager';
 import Item from './pages/item';
+import RestockReport from './pages/RestockReport';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/cashier" element={<Cashier />} />
         <Route path="/manager" element={<Manager />} />
         <Route path="/item" element={<Item />} />
+        <Route path="/restock-report" element={<RestockReport />} />
       </Routes>
     </Router>
   );
