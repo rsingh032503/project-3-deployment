@@ -18,6 +18,7 @@ function App() {
         <Route path="/manager" element={<Manager />} />
         <Route path="/item" element={<Item />} />
         <Route path="/restock-report" element={<RestockReport />} />
+        <Route path="/sales-report" element={<RestockReport />} />
       </Routes>
     </Router>
   );
