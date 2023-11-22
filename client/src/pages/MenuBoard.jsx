@@ -59,20 +59,25 @@ function MenuBoard() {
             	))}
         	</div>
       	)}
-      	{weatherData && (
-        	<div className="weather-container">
-          	<h2>Weather in {weatherData.location.name}</h2>
-          	<h3>Current temperature: {weatherData.current.temp_f}°F</h3>
-          	<h3>Forecast:</h3>
-          	{weatherData.forecast.forecastday.map((day) => (
-            	<div key={day.date}>
-              	<p>Date: {day.date}</p>
-              	<p>Max temp: {day.day.maxtemp_f}°F</p>
-              	<p>Min temp: {day.day.mintemp_f}°F</p>
-            	</div>
-          	))}
-        	</div> 
-	  	)}     
+		{weatherData && (
+		<div className="weather-container">
+			<h2>Weather in {weatherData.location.name}</h2>
+			<h3>Current temperature: {weatherData.current.temp_f}°F</h3>
+			<h3>Forecast:</h3>
+			<div className="forecast-container">
+			{weatherData.forecast.forecastday.map((day) => (
+				<div key={day.date} className="forecast-day">
+				<h4>{day.date}</h4>
+				<img src={day.day.condition.icon} alt={day.day.condition.text} />
+				<p>{day.day.condition.text}</p>
+				<p>Max temp: {day.day.maxtemp_f}°F</p>
+				<p>Min temp: {day.day.mintemp_f}°F</p>
+				<p>Chance of rain: {day.day.daily_chance_of_rain}%</p>
+				</div>
+			))}
+			</div>
+		</div>
+		)}     
     	</>
   	);
 }
