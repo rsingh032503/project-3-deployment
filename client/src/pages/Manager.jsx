@@ -449,7 +449,7 @@ function Manager() {
           }}>Excess Report</button>
         </div>
         
-        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button>
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("https://project-3-09m-server.onrender.com/restock-report")}}>Restock Report</button>
       </div>
       
     </div>
