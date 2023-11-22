@@ -57,7 +57,18 @@ function Cart(){
         }
 
         function removeFromCart(item){
-            
+            if(item.quantity > 1){
+                item.quantity -= 1;
+            }
+            else{
+                let ind = cart.indexOf(item);
+                if(index != -1){
+                    cart.splice(ind,1);
+                }
+                else{
+                    console.error("could not remove item from cart: ", item);
+                }
+            }
         }
 
 
