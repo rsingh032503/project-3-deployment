@@ -56,26 +56,37 @@ function Cart(){
             });
         }
 
+        function removeFromCart(item){
+            if(item.quantity > 1){
+                item.quantity -= 1;
+            }
+            else{
+                let ind = cart.indexOf(item);
+                if(index != -1){
+                    cart.splice(ind,1);
+                }
+                else{
+                    console.error("could not remove item from cart: ", item);
+                }
+            }
+        }
+
 
 
         return(
             <div>
-                <div className="column">
-                    <h2>Items:</h2>
-                    <tbody>
-                        {cart.map((item) => {
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.price}</td>
-                                <td>{"x" + item.quantity}</td>
-                            </tr>   
-                        })}
-                    </tbody>
-                </div>
-                <div className="column">
-                    <button onClick={handleCheckout}>Check Out</button>
-                </div>
-
+                <h2>Items:</h2>
+                <tbody>
+                    {cart.map((item) => {
+                        <tr key={item.id}>
+                            <td>{item.name}</td>
+                            <td>{item.price}</td>
+                            <td>{"x" + item.quantity}</td>
+                            <td><button onClick={removeFromCart(item)}>X</button></td>
+                        </tr>   
+                    })}
+                </tbody>
+                <button onClick={handleCheckout}>Check Out</button>
             </div>
         );
     }
