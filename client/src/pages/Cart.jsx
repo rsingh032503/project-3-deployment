@@ -29,7 +29,21 @@ function Cart(){
 
         return(
             <div>
-                
+                <div className="column">
+                    <h2>Items:</h2>
+                    <tbody>
+                        {cart.map((item) => {
+                            <tr key={item.id}>
+                                <td>{item.name}</td>
+                                <td>{item.price}</td>
+                                <td>{"x" + item.quantity}</td>
+                            </tr>   
+                        })}
+                    </tbody>
+                </div>
+                <div className="column">
+
+                </div>
 
             </div>
         );
