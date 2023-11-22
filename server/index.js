@@ -294,6 +294,40 @@ app.post('/submitOrder', async (req, res) => {
     }
 });
 
+app.get('/sales-report', async (req, res) => {
+    try {
+      const start = req.query.start;
+      const end = req.query.end;
+  
+      // Query to filter orders based on the time window
+      const orderQuery = 'SELECT * FROM order_table WHERE date_placed >= $1 AND date_placed <= $2';
+      const orderResult = await pool.query(orderQuery, [start, end]);
+      const filteredOrders = orderResult.rows;
+  
+      // Query to retrieve menu item sales from join table
+      const salesQuery = `
+        SELECT
+          m.name AS menu_item_name,
+          m.price AS menu_item_price,
+          jo.quantity,
+          (m.price * jo.quantity) AS total_sales
+        FROM
+          menu_item_order_join_table jo
+        JOIN
+          menu_item m ON jo.menuitemid = m.id
+        WHERE
+          jo.orderid = ANY($1::int[])
+      `;
+      const salesResult = await pool.query(salesQuery, [filteredOrders.map(order => order.id)]);
+      const menuItemSales = salesResult.rows;
+  
+      res.json({ sales: menuItemSales });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error getting sales report');
+    }
+  });
+
 //Gets the understocked ingredients
 app.get('/understocked', async (req, res) => {
     try {
