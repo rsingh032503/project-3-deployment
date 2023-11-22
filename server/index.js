@@ -98,6 +98,20 @@ app.get('/order_table', (req, res) => {
     getAllFromTable('order_table', res);
 });
 
+app.post('/menu_item', async (req, res) => {
+    const name = req.body.name;
+    const price = req.body.price;
+    const id = req.body.id;
+    try {
+      const insertQuery = 'INSERT INTO menu_item VALUES ($1, $2, $3)';
+      await pool.query(insertQuery, [id, price, name]);
+      res.json('Menu item was added!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error adding menu item');
+    }
+});
+
 //Deletes a menu item based on the name that is provided
 app.delete("/menu_item/:name", async (req, res) =>{
     try{

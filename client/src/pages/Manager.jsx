@@ -16,6 +16,7 @@ function Manager() {
   const [selectedMenuItemName, setSelectedMenuItemName] = useState('');
   const [selectedMenuItemIngredients, setSelectedMenuItemIngredients] = useState([]);
   const [selectedMenuItemPrice, setSelectedMenuItemPrice] = useState('');
+  const menuItemIDs = [];
 
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
@@ -38,9 +39,13 @@ function Manager() {
     ingredientIDs.push(ingredients[i].id);
   }
 
+  for(let i = 0; i < menuItems.length; i++){
+    menuItemIDs.push(menuItems[i].id);
+  }
+
   //Refresh the ingredients table 
   const LoadIngredientTable = () => {
-    fetch('http://localhost:3000/ingredient')
+    fetch('https://project-3-09m-server.onrender.com/ingredient')
     .then(response => response.json())
     .then(data => setIngredients(data.ingredient))
     .catch(error => console.error('Error:', error));
@@ -49,11 +54,79 @@ function Manager() {
   //Refresh the menu item table
   //ZAK USES THIS FUNCTION FOR REFRESHING YOUR MENU ITEM TABLES
   const LoadMenuItemTable = () => {
-    fetch('https://project-3-09m-server.onrender.com/ingredient')
+    fetch('https://project-3-09m-server.onrender.com/menu_item')
     .then(response => response.json())
     .then(data => setIngredients(data.ingredient))
     .catch(error => console.error('Error:', error));
   };
+
+  function handleMenuItemAdd(name, usedIngredients, price) {
+    try {
+      // Input validation
+      if (price < 0 || !Number.isFinite(parseFloat(price))) {
+        console.log("Invalid inputs");
+        return;
+      }
+  
+      // Generate a new id and table values for a new menu item
+      const id = Math.max(...menuItemIDs) + 1;
+      menuItemIDs.push(id);
+  
+      // Create an array to store the promises for adding rows to the join table
+      const joinTablePromises = [];
+  
+      // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
+      usedIngredients.forEach(ingredientName => {
+        const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
+  
+        if (ingredient) {
+          const joinTableBody = JSON.stringify({
+            ingredient_id: ingredient.id,
+            menu_item_id: id,
+            quantity: 1.0,
+          });
+  
+          const joinTablePromise = fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: joinTableBody,
+          })
+            .then(response => response.json())
+            .catch(error => console.error('Error adding row to join table:', error));
+  
+          joinTablePromises.push(joinTablePromise);
+        } else {
+          console.warn(`Ingredient not found: ${ingredientName}`);
+        }
+      });
+  
+      // Add the menu item
+      const menuItemBody = JSON.stringify({ id, price, name });
+  
+      const menuItemPromise = fetch('https://project-3-09m-server.onrender.com/menu_item', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: menuItemBody,
+      })
+        .then(response => response.json())
+        .then(response => {
+          LoadMenuItemTable();
+          console.log(response);
+        })
+        .catch(error => console.error('Error adding menu item:', error));
+  
+      // Wait for all promises to resolve
+      Promise.all([menuItemPromise, ...joinTablePromises])
+        .then(results => {
+          console.log('All operations completed successfully:', results);
+        })
+        .catch(error => console.error('Error:', error));
+  
+    } catch (err) {
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
 
   const handleMenuItemDelete = async (name) => {
     axios
@@ -318,9 +391,9 @@ function Manager() {
         </div>
 
         <div className="ButtonColumn">
-          <button>Add Menu Item</button>
+          <button onClick={handleMenuItemAdd.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Add Menu Item</button>
           <button>Update Menu Item</button>
-          <button onClick={handleMenuItemDelete.bind(this,menuItems.name)}>Delete Menu Item</button>
+          <button onClick={handleMenuItemDelete.bind(this, selectedMenuItemName)}>Delete Menu Item</button>
         </div>
       </div>
 
