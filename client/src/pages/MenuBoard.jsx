@@ -29,7 +29,7 @@ function MenuBoard() {
 
       	const fetchWeatherData = async () => {
         	const API_KEY = 'c07de4218ecd476595111859231611';
-        	const LOCATION = 'College Station'; // replace with your location
+        	const LOCATION = 'College Station';
         	try {
           	const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${LOCATION}&days=3`);
           	if (!response.ok) {
