@@ -18,6 +18,10 @@ function Manager() {
   const [selectedMenuItemPrice, setSelectedMenuItemPrice] = useState('');
   const menuItemIDs = [];
 
+  const [salesStart, setSalesStart] = useState('');
+  const [salesEnd, setSalesEnd] = useState('');
+  const [excessStart, setExcessStart] = useState('');
+
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
       .then(response => response.json())
@@ -398,9 +402,44 @@ function Manager() {
       </div>
 
       <div className="ReportButtons">
-        <button>Sales Report</button>
-        <button>Excess Report</button>
-        <button onClick={ e =>{ console.log("Restock Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button>
+        <div className="ButtonColumn">
+          <label className="TextboxLabel">Start Date</label>
+          <input
+            id="salesStartTextbox"
+            type="text"
+            value={salesStart}
+            onChange={e => setSalesStart(e.target.value)}
+          />
+          <label className="TextboxLabel">End Date</label>
+          <input
+            id="salesEndTextbox"
+            type="text"
+            value={salesEnd}
+            onChange={e => setSalesEnd(e.target.value)}
+          />
+          <button onClick={() => {
+            console.log("Sales Report Button clicked!");
+            const url = `http://localhost:5173/sales-report?start=${salesStart}&end=${salesEnd}`;
+            window.open(url);
+          }}>Sales Report</button>
+        </div>
+        
+        <div className='ButtonColumn'>
+          <label className="TextboxLabel">Start Date</label>
+          <input
+            id="excessTextbox"
+            type="text"
+            value={excessStart}
+            onChange={e => setExcessStart(e.target.value)}
+          />
+          <button onClick={() => {
+            console.log("Excess Report Button clicked!");
+            const url = `http://localhost:5173/excess-report?start=${excessStart}`;
+            window.open(url);
+          }}>Excess Report</button>
+        </div>
+        
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button>
       </div>
       
     </div>
