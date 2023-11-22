@@ -5,6 +5,7 @@ import '../styles/Manager.css';
 function Manager() {
   const [menuItems, setMenuItems] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [joinTable, setJoinTable] = useState([]);
 
   const [selectedingredientName, setSelectedIngredientName] = useState('');
   const [selectedPrice, setSelectedPrice] = useState('');
@@ -25,6 +26,11 @@ function Manager() {
     fetch('https://project-3-09m-server.onrender.com/ingredient')
       .then(response => response.json())
       .then(data => setIngredients(data.ingredient))
+      .catch(error => console.error('Error:', error));
+
+    fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table')
+      .then(response => response.json())
+      .then(data => setJoinTable(data.ingredient_menu_item_join_table))
       .catch(error => console.error('Error:', error));
   }, []);
 
@@ -69,6 +75,24 @@ function Manager() {
   const handleMenuItemClick = (item) => {
     // Update the state to store the selected item
     setSelectedItem(item);
+    setSelectedMenuItemName(item.name);
+
+    // Filter the joinTable for the selected menu item id
+    const selectedMenuItemJoinData = joinTable.filter(joinData => joinData.menu_item_id === item.id);
+
+    // Extract ingredient names from the filtered joinTableData
+    const selectedMenuItemIngredientNames = selectedMenuItemJoinData.map(joinData => {
+      const ingredient = ingredients.find(ingredient => ingredient.id === joinData.ingredient_id);
+      return ingredient ? ingredient.name : null;
+    });
+
+    // Remove null values (in case an ingredient was not found)
+    const filteredIngredientNames = selectedMenuItemIngredientNames.filter(name => name !== null);
+
+    // Update the state with the list of ingredient names
+    setSelectedMenuItemIngredients(filteredIngredientNames);
+
+    setSelectedMenuItemPrice(item.price);
   };
 
   const handleCheckboxChange = (e) => {
