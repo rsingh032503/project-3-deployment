@@ -18,6 +18,8 @@ function Manager() {
   const [selectedMenuItemPrice, setSelectedMenuItemPrice] = useState('');
   const menuItemIDs = [];
 
+  const joinIDs = [];
+
   const [salesStart, setSalesStart] = useState('');
   const [salesEnd, setSalesEnd] = useState('');
   const [excessStart, setExcessStart] = useState('');
@@ -47,6 +49,10 @@ function Manager() {
     menuItemIDs.push(menuItems[i].id);
   }
 
+  for(let i = 0; i < joinTable.length; i++) {
+    joinIDs.push(joinTable[i].join_id)
+  }
+
   //Refresh the ingredients table 
   const LoadIngredientTable = () => {
     fetch('https://project-3-09m-server.onrender.com/ingredient')
@@ -73,8 +79,8 @@ function Manager() {
       }
   
       // Generate a new id and table values for a new menu item
-      const id = Math.max(...menuItemIDs) + 1;
-      menuItemIDs.push(id);
+      const menu_id = Math.max(...menuItemIDs) + 1;
+      menuItemIDs.push(menu_id);
   
       // Create an array to store the promises for adding rows to the join table
       const joinTablePromises = [];
@@ -82,15 +88,19 @@ function Manager() {
       // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
       usedIngredients.forEach(ingredientName => {
         const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
+
+        const join_id = Math.max(...joinIDs) + 1;
+        joinIDs.push(join_id);
   
         if (ingredient) {
           const joinTableBody = JSON.stringify({
+            join_id: join_id,
             ingredient_id: ingredient.id,
-            menu_item_id: id,
+            menu_item_id: menu_id,
             quantity: 1.0,
           });
   
-          const joinTablePromise = fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', {
+          const joinTablePromise = fetch('http://localhost:3000/ingredient_menu_item_join_table', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: joinTableBody,
@@ -105,9 +115,9 @@ function Manager() {
       });
   
       // Add the menu item
-      const menuItemBody = JSON.stringify({ id, price, name });
+      const menuItemBody = JSON.stringify({ menu_id, price, name });
   
-      const menuItemPromise = fetch('https://project-3-09m-server.onrender.com/menu_item', {
+      const menuItemPromise = fetch('http://localhost:3000/menu_item', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: menuItemBody,

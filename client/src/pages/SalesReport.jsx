@@ -14,7 +14,7 @@ function SalesReport() {
         .then(data => setMenuItemsSales(data.sales))
         .catch(error => console.error('Error fetching sales report:', error));
     }
-  }, [salesStart, salesEnd]);
+  }, []);
 
   return (
     <div>
