@@ -112,6 +112,21 @@ app.post('/menu_item', async (req, res) => {
     }
 });
 
+app.post('/ingredient_menu_item_join_table', async (req, res) => {
+    const id = req.body.join_id;
+    const ingredient_id = req.body.ingredient_id;
+    const menu_item_id = req.body.menu_item_id;
+    const quantity = req.body.quantity;
+    try {
+      const insertQuery = 'INSERT INTO ingredient_menu_item_join_table VALUES ($1, $2, $3, $4)';
+      await pool.query(insertQuery, [id, ingredient_id, menu_item_id, quantity]);
+      res.json('Menu item ingredients were added!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error adding menu item ingredients');
+    }
+});
+
 //Deletes a menu item based on the name that is provided
 app.delete("/menu_item/:name", async (req, res) =>{
     try{
@@ -326,7 +341,53 @@ app.get('/sales-report', async (req, res) => {
       console.error(err);
       res.status(500).json('Error getting sales report');
     }
-  });
+});
+
+app.get('/excess-report', async (req, res) => {
+    try {
+        const start = req.query.start;
+
+        // Single query to retrieve excess report data
+        const excessReportQuery = `
+            SELECT
+                i.id AS ingredient_id,
+                i.name AS ingredient_name,
+                i.quantity AS original_quantity,
+                COALESCE(SUM(jo.quantity), 0) AS amount_sold_since_timestamp
+            FROM
+                ingredient i
+            LEFT JOIN
+                ingredient_menu_item_join_table im ON i.id = im.ingredient_id
+            LEFT JOIN
+                menu_item_order_join_table jo ON im.menu_item_id = jo.menuitemid
+            LEFT JOIN
+                order_table o ON jo.orderid = o.id
+            WHERE
+                o.date_placed >= $1
+            GROUP BY
+                i.id
+        `;
+
+        const excessReportResult = await pool.query(excessReportQuery, [start]);
+        const excessIngredients = excessReportResult.rows.map(ingredient => {
+            const quantityAtTimestamp = Number(ingredient.original_quantity) + Number(ingredient.amount_sold_since_timestamp);
+            const percentageSold = (ingredient.amount_sold_since_timestamp / quantityAtTimestamp) * 100;
+
+            return {
+                id: ingredient.ingredient_id,
+                name: ingredient.ingredient_name,
+                quantityAtTimestamp: quantityAtTimestamp,
+                amountSoldSinceTimestamp: ingredient.amount_sold_since_timestamp,
+                percentageSold: percentageSold,
+            };
+        });
+
+        res.json({ excessIngredients });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error getting excess report');
+    }
+});
 
 //Gets the understocked ingredients
 app.get('/understocked', async (req, res) => {

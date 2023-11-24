@@ -82,9 +82,6 @@ function Manager() {
       const menu_id = Math.max(...menuItemIDs) + 1;
       menuItemIDs.push(menu_id);
   
-      // Create an array to store the promises for adding rows to the join table
-      const joinTablePromises = [];
-  
       // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
       usedIngredients.forEach(ingredientName => {
         const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
@@ -100,15 +97,13 @@ function Manager() {
             quantity: 1.0,
           });
   
-          const joinTablePromise = fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+          fetch('http://localhost:3000/ingredient_menu_item_join_table', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: joinTableBody,
           })
-            .then(response => response.json())
-            .catch(error => console.error('Error adding row to join table:', error));
-  
-          joinTablePromises.push(joinTablePromise);
+          .then(response => response.json())
+          .catch(error => console.error('Error adding row to join table:', error));
         } else {
           console.warn(`Ingredient not found: ${ingredientName}`);
         }
@@ -117,24 +112,17 @@ function Manager() {
       // Add the menu item
       const menuItemBody = JSON.stringify({ menu_id, price, name });
   
-      const menuItemPromise = fetch('http://localhost:3000/menu_item', {
+      fetch('http://localhost:3000/menu_item', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: menuItemBody,
       })
-        .then(response => response.json())
-        .then(response => {
-          LoadMenuItemTable();
-          console.log(response);
-        })
-        .catch(error => console.error('Error adding menu item:', error));
-  
-      // Wait for all promises to resolve
-      Promise.all([menuItemPromise, ...joinTablePromises])
-        .then(results => {
-          console.log('All operations completed successfully:', results);
-        })
-        .catch(error => console.error('Error:', error));
+      .then(response => response.json())
+      .then(response => {
+        LoadMenuItemTable();
+        console.log(response);
+      })
+      .catch(error => console.error('Error adding menu item:', error));
   
     } catch (err) {
       console.log("Error Message");
