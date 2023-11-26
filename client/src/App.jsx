@@ -6,6 +6,7 @@ import Cashier from './pages/Cashier';
 import Manager from './pages/Manager';
 import Item from './pages/item';
 import RestockReport from './pages/RestockReport';
+import Cart from './pages/Cart.jsx';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/manager" element={<Manager />} />
         <Route path="/item" element={<Item />} />
         <Route path="/restock-report" element={<RestockReport />} />
+        <Route path="/Cart" element={<Cart />} />
       </Routes>
     </Router>
   );
