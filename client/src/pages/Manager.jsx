@@ -139,22 +139,62 @@ function Manager() {
     }
   }
 
-  const handleMenuItemDelete = async (name) => {
-    axios
-    .delete(`https://project-3-09m-server.onrender.com/menu_item/${name}`)
-    .then((response) => {
-      if (response.status === 200) {
-        // If the deletion is successful, update the state to reflect the changes
-        const updatedItems = menuItems.filter(item => item.name !== name);
-        setMenuItems(updatedItems);
-      } else {
-        console.error('Error deleting menu item');
-      }
-    })
-    .catch((error) => {
-      console.error('Error deleting menu item:', error);
-    });
-  };
+  function handleMenuItemDelete(name) {
+    try {
+        // Find the menu item's id with the given name
+        const menuItem = menuItems.find(item => item.name === name);
+
+        if (!menuItem) {
+            console.warn(`Menu item not found: ${name}`);
+            return;
+        }
+
+        const menuItemId = menuItem.id;
+
+        // Delete rows with the menu item id from ingredient_menu_item_join_table
+        fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log(`Rows deleted from ingredient_menu_item_join_table for menu item: ${name}`);
+            } else {
+                console.error(`Error deleting rows from ingredient_menu_item_join_table: ${response.statusText}`);
+            }
+        })
+        .catch(error => console.error('Error deleting rows from ingredient_menu_item_join_table:', error));
+
+        // Delete the menu item from the menu_item table
+        fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        })
+        .then(response => {
+            if (response.ok) {
+                LoadMenuItemTable(); // Refresh the menu item table after deletion
+                console.log(`Menu item deleted: ${name}`);
+            } else {
+                console.error(`Error deleting menu item: ${response.statusText}`);
+            }
+        })
+        .catch(error => console.error('Error deleting menu item:', error));
+
+    } catch (err) {
+        console.log("Error Message");
+        console.log('Network error:', err.message);
+    }
+  }
+
+  function handleMenuItemUpdate(name, usedIngredients, price) {
+    try {
+      handleMenuItemDelete(name);
+      handleMenuItemAdd(name, usedIngredients, price);
+    } catch (err) {
+        console.log("Error Message");
+        console.log('Network error:', err.message);
+    }
+  }
 
   const handleMenuItemClick = (item) => {
     // Update the state to store the selected item
@@ -403,7 +443,7 @@ function Manager() {
 
         <div className="ButtonColumn">
           <button onClick={handleMenuItemAdd.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Add Menu Item</button>
-          <button>Update Menu Item</button>
+          <button onClick={handleMenuItemUpdate.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Update Menu Item</button>
           <button onClick={handleMenuItemDelete.bind(this, selectedMenuItemName)}>Delete Menu Item</button>
         </div>
       </div>

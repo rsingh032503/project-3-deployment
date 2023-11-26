@@ -127,16 +127,36 @@ app.post('/ingredient_menu_item_join_table', async (req, res) => {
     }
 });
 
-//Deletes a menu item based on the name that is provided
-app.delete("/menu_item/:name", async (req, res) =>{
-    try{
-        const {name} = req.params;
-        const deleteTodo = await pool.query("DELETE FROM menu_item WHERE name = $1", [
-            name
-        ]);
-        res.json("Menu Item was deleted!")
-    }catch(err){
-        console.log(err.message);
+app.delete('/ingredient_menu_item_join_table/menu-item/:id', async (req, res) => {
+    try {
+        const menuItemId = req.params.id;
+
+        const deleteRowsQuery = 'DELETE FROM ingredient_menu_item_join_table WHERE menu_item_id = $1';
+        await pool.query(deleteRowsQuery, [menuItemId]);
+
+        res.status(200).json(`Rows in ingredient_menu_item_join_table deleted for menu item id: ${menuItemId}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error deleting rows in ingredient_menu_item_join_table');
+    }
+});
+
+app.delete('/menu_item/:id', async (req, res) => {
+    try {
+        const menuItemId = req.params.id;
+
+        // First, delete rows in ingredient_menu_item_join_table
+        const deleteRowsQuery = 'DELETE FROM ingredient_menu_item_join_table WHERE menu_item_id = $1';
+        await pool.query(deleteRowsQuery, [menuItemId]);
+
+        // Then, delete the menu item from the menu_item table
+        const deleteMenuItemQuery = 'DELETE FROM menu_item WHERE id = $1';
+        await pool.query(deleteMenuItemQuery, [menuItemId]);
+
+        res.status(200).json(`Menu item deleted with id: ${menuItemId}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error deleting menu item');
     }
 });
 
