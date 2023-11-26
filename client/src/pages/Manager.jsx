@@ -62,71 +62,80 @@ function Manager() {
   };
 
   //Refresh the menu item table
-  //ZAK USES THIS FUNCTION FOR REFRESHING YOUR MENU ITEM TABLES
+  // ABHINAV SABOTAGES ZAK AGAIN
   const LoadMenuItemTable = () => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
     .then(response => response.json())
-    .then(data => setIngredients(data.ingredient))
+    .then(data => setMenuItems(data.menu_item))
+    .catch(error => console.error('Error:', error));
+  };
+
+  const LoadJoinTable = () => {
+    fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table')
+    .then(response => response.json())
+    .then(data => setJoinTable(data.ingredient_menu_item_join_table))
     .catch(error => console.error('Error:', error));
   };
 
   function handleMenuItemAdd(name, usedIngredients, price) {
     try {
-      // Input validation
-      if (price < 0 || !Number.isFinite(parseFloat(price))) {
-        console.log("Invalid inputs");
-        return;
-      }
-  
-      // Generate a new id and table values for a new menu item
-      const menu_id = Math.max(...menuItemIDs) + 1;
-      menuItemIDs.push(menu_id);
-  
-      // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
-      usedIngredients.forEach(ingredientName => {
-        const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
+        // Input validation
+        if (price < 0 || !Number.isFinite(parseFloat(price))) {
+            console.log("Invalid inputs");
+            return;
+        }
 
-        const join_id = Math.max(...joinIDs) + 1;
-        joinIDs.push(join_id);
-  
-        if (ingredient) {
-          const joinTableBody = JSON.stringify({
-            join_id: join_id,
-            ingredient_id: ingredient.id,
-            menu_item_id: menu_id,
-            quantity: 1.0,
-          });
-  
-          fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+        // Generate a new id and table values for a new menu item
+        const id = Math.max(...menuItemIDs) + 1;
+        menuItemIDs.push(id);
+
+        const menuItemBody = JSON.stringify({ id, price, name });
+
+        fetch('http://localhost:3000/menu_item', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: joinTableBody,
-          })
-          .then(response => response.json())
-          .catch(error => console.error('Error adding row to join table:', error));
-        } else {
-          console.warn(`Ingredient not found: ${ingredientName}`);
-        }
-      });
-  
-      // Add the menu item
-      const menuItemBody = JSON.stringify({ menu_id, price, name });
-  
-      fetch('http://localhost:3000/menu_item', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: menuItemBody,
-      })
-      .then(response => response.json())
-      .then(response => {
-        LoadMenuItemTable();
-        console.log(response);
-      })
-      .catch(error => console.error('Error adding menu item:', error));
-  
+            body: menuItemBody,
+        })
+        .then(response => response.json())
+        .then(menuItemResponse => {
+            LoadMenuItemTable();
+            console.log(menuItemResponse);
+
+            // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
+            usedIngredients.forEach(ingredientName => {
+                const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
+
+                const join_id = Math.max(...joinIDs) + 1;
+                joinIDs.push(join_id);
+
+                if (ingredient) {
+                    const joinTableBody = JSON.stringify({
+                        join_id: join_id,
+                        ingredient_id: ingredient.id,
+                        menu_item_id: id,
+                        quantity: 1.0,
+                    });
+
+                    fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: joinTableBody,
+                    })
+                    .then(response => response.json())
+                    .then(response=> {
+                      LoadJoinTable();
+                      console.log(response);
+                    })
+                    .catch(error => console.error('Error adding row to join table:', error));
+                } else {
+                    console.warn(`Ingredient not found: ${ingredientName}`);
+                }
+            });
+        })
+        .catch(error => console.error('Error adding menu item:', error));
     } catch (err) {
-      console.log("Error Message");
-      console.log('Network error:', err.message);
+        console.log("Error Message");
+        console.log('Network error:', err.message);
     }
   }
 
