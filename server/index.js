@@ -356,15 +356,18 @@ app.get('/sales-report', async (req, res) => {
         SELECT
           m.name AS menu_item_name,
           m.price AS menu_item_price,
-          jo.quantity,
-          (m.price * jo.quantity) AS total_sales
+          SUM(jo.quantity) AS total_quantity,
+          SUM(m.price * jo.quantity) AS total_sales
         FROM
           menu_item_order_join_table jo
         JOIN
           menu_item m ON jo.menuitemid = m.id
         WHERE
           jo.orderid = ANY($1::int[])
+        GROUP BY
+          m.name, m.price;
       `;
+  
       const salesResult = await pool.query(salesQuery, [filteredOrders.map(order => order.id)]);
       const menuItemSales = salesResult.rows;
   

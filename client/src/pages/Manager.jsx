@@ -502,7 +502,11 @@ function Manager() {
           <button onClick={() => {
             console.log("Sales Report Button clicked!");
           }}>
-            <Link className={((location.pathname === "/sales-report")? "active":"" )} to="/sales-report">Sales Report</Link>
+            <Link className={((location.pathname === "/sales-report")? "active":"" )}
+            to={{
+              pathname: "/sales-report",
+              search: `?start=${salesStart}&end=${salesEnd}`,
+            }}>Sales Report</Link>
           </button>
         </div>
         
@@ -517,7 +521,11 @@ function Manager() {
           <button onClick={() => {
             console.log("Excess Report Button clicked!");
           }}>
-            <Link className={((location.pathname === "/excess-report")? "active":"" )} to="/excess-report">Excess Report</Link>
+            <Link className={((location.pathname === "/excess-report")? "active":"" )}
+            to={{
+              pathname: "/excess-report",
+              search: `?start=${excessStart}`,
+            }}>Restock Report</Link>
             </button>
         </div>
         
