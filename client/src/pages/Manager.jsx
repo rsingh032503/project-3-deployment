@@ -63,7 +63,6 @@ function Manager() {
   };
 
   //Refresh the menu item table
-  // ABHINAV SABOTAGES ZAK AGAIN
   const LoadMenuItemTable = () => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
     .then(response => response.json())
@@ -92,7 +91,7 @@ function Manager() {
 
         const menuItemBody = JSON.stringify({ id, price, name });
 
-        fetch('http://project-3-09m-server.onrender.com/menu_item', { // fetch('http://localhost:3000/menu_item', {
+        fetch('https://project-3-09m-server.onrender.com/menu_item', { // fetch('http://localhost:3000/menu_item', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: menuItemBody,
@@ -125,7 +124,7 @@ function Manager() {
         deleteItemIngredients(name, menuItemId);
 
         // Delete the menu item from the menu_item table
-        fetch(`http://project-3-09m-server.onrender.com/menu_item/${menuItemId}`, { // fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
+        fetch(`https://project-3-09m-server.onrender.com/menu_item/${menuItemId}`, { // fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
         })
@@ -161,7 +160,7 @@ function Manager() {
               quantity: 1.0,
           });
 
-          fetch('http://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', { // fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+          fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', { // fetch('http://localhost:3000/ingredient_menu_item_join_table', {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: joinTableBody,
@@ -180,7 +179,7 @@ function Manager() {
 
   function deleteItemIngredients(name, menuItemId) {
     // Delete rows with the menu item id from ingredient_menu_item_join_table
-    fetch(`http://project-3-09m-server.onrender.com/ingredient_menu_item_join_table/menu-item/${menuItemId}`, { // fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
+    fetch(`https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table/menu-item/${menuItemId}`, { // fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })
@@ -203,7 +202,7 @@ function Manager() {
       }
       
       const body = JSON.stringify({name, price});
-      fetch('http://project-3-09m-server.onrender.com/menu_item', { // fetch('http://localhost:3000/menu_item', {
+      fetch('https://project-3-09m-server.onrender.com/menu_item', { // fetch('http://localhost:3000/menu_item', {
         method: "PUT",
         headers: {"Content-Type": "application/json" },
         body: body
