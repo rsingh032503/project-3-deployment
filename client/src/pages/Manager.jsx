@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/Manager.css';
 
 function Manager() {
@@ -521,7 +522,9 @@ function Manager() {
           }}>Excess Report</button>
         </div>
         
-        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("https://project-3-09m.onrender.com/restock-report")}}>Restock Report</button>
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}> 
+          <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report</Link>
+        </button>
         {/* <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button> */}
       </div>
       
