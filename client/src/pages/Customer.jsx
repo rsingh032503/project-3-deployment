@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Customer.css';
 import { images } from '../images.js';
 import { Link } from 'react-router-dom';
+import { getCartSize } from '../cart.js';
 
 function Customer() {
     const [menuItems, setMenuItems] = useState([]);
@@ -46,19 +47,24 @@ function Customer() {
     
     return (
         <div>
-          <h2 className='Title'>Customer View</h2>
-          <h3 className='DrinkTitle'>Drinks:</h3>
-          <div className="grid">
-            {menuItems.map((item,index) => (
-                <Link className="itemLink" key={item.id} to="/item" state={item}>
-                    <button className="item">   
-                        <img src={images[item.name]} alt={item.name + " image"}/>
-                        <p>{item.name}</p>
-                        <p>${item.price}</p> 
-                    </button>
-                </Link>
-            ))}
-          </div>
+            <h2 className='Title'>Customer View</h2>
+            <h3 className='DrinkTitle'>
+                <p>Drinks:</p>
+                <button className='toCart'>
+                    <Link className='cartLink' to="/Cart">{"Cart (" + getCartSize() + ")"}</Link>
+                </button>
+            </h3>
+            <div className="grid">
+                {menuItems.map((item,index) => (
+                    <Link className="itemLink" key={item.id} to="/item" state={item}>
+                        <button className="item">   
+                            <img src={images[item.name]} alt={item.name + " image"}/>
+                            <p>{item.name}</p>
+                            <p>${item.price}</p> 
+                        </button>
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 }

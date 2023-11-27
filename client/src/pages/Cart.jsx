@@ -77,12 +77,14 @@ function Cart(){
                 <table>
                     <tbody>
                         {cart.map((item) => {
-                            <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.price}</td>
-                                <td>{"x" + item.quantity}</td>
-                                <td><button onClick={removeFromCart.bind(this,item)}>X</button></td>
-                            </tr>   
+                            <div>
+                                <tr key={item.id}>
+                                    <td>{item.name}</td>
+                                    <td>{item.price}</td>
+                                    <td>{"x" + item.quantity}</td>
+                                    <td><button onClick={removeFromCart.bind(this,item)}>X</button></td>
+                                </tr>   
+                            </div>
                         })}
                     </tbody>
                 </table>

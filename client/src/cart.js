@@ -34,7 +34,7 @@ export const removeFromCart = (item) => {
 }
 
 export const getCartSize = () => {
-    return cart.length();
+    return cart.length;
 }
 
 export const clearCart = () => {
