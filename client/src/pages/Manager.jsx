@@ -100,37 +100,7 @@ function Manager() {
         .then(menuItemResponse => {
             LoadMenuItemTable();
             console.log(menuItemResponse);
-
-            // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
-            usedIngredients.forEach(ingredientName => {
-                const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
-
-                const join_id = Math.max(...joinIDs) + 1;
-                joinIDs.push(join_id);
-
-                if (ingredient) {
-                    const joinTableBody = JSON.stringify({
-                        join_id: join_id,
-                        ingredient_id: ingredient.id,
-                        menu_item_id: id,
-                        quantity: 1.0,
-                    });
-
-                    fetch('http://localhost:3000/ingredient_menu_item_join_table', {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: joinTableBody,
-                    })
-                    .then(response => response.json())
-                    .then(response=> {
-                      LoadJoinTable();
-                      console.log(response);
-                    })
-                    .catch(error => console.error('Error adding row to join table:', error));
-                } else {
-                    console.warn(`Ingredient not found: ${ingredientName}`);
-                }
-            });
+            addItemIngredients(id, usedIngredients);
         })
         .catch(error => console.error('Error adding menu item:', error));
     } catch (err) {
@@ -151,19 +121,7 @@ function Manager() {
 
         const menuItemId = menuItem.id;
 
-        // Delete rows with the menu item id from ingredient_menu_item_join_table
-        fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log(`Rows deleted from ingredient_menu_item_join_table for menu item: ${name}`);
-            } else {
-                console.error(`Error deleting rows from ingredient_menu_item_join_table: ${response.statusText}`);
-            }
-        })
-        .catch(error => console.error('Error deleting rows from ingredient_menu_item_join_table:', error));
+        deleteItemIngredients(name, menuItemId);
 
         // Delete the menu item from the menu_item table
         fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
@@ -186,10 +144,87 @@ function Manager() {
     }
   }
 
+  function addItemIngredients(menuItemId, usedIngredients) {
+    // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
+    usedIngredients.forEach(ingredientName => {
+      const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
+
+      const join_id = Math.max(...joinIDs) + 1;
+      joinIDs.push(join_id);
+
+      if (ingredient) {
+          const joinTableBody = JSON.stringify({
+              join_id: join_id,
+              ingredient_id: ingredient.id,
+              menu_item_id: menuItemId,
+              quantity: 1.0,
+          });
+
+          fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: joinTableBody,
+          })
+          .then(response => response.json())
+          .then(response=> {
+            LoadJoinTable();
+            console.log(response);
+          })
+          .catch(error => console.error('Error adding row to join table:', error));
+      } else {
+          console.warn(`Ingredient not found: ${ingredientName}`);
+      }
+    });
+  }
+
+  function deleteItemIngredients(name, menuItemId) {
+    // Delete rows with the menu item id from ingredient_menu_item_join_table
+    fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log(`Rows deleted from ingredient_menu_item_join_table for menu item: ${name}`);
+        } else {
+            console.error(`Error deleting rows from ingredient_menu_item_join_table: ${response.statusText}`);
+        }
+    })
+    .catch(error => console.error('Error deleting rows from ingredient_menu_item_join_table:', error));
+  }
+
   function handleMenuItemUpdate(name, usedIngredients, price) {
     try {
-      handleMenuItemDelete(name);
-      handleMenuItemAdd(name, usedIngredients, price);
+      // Input validation
+      if (price < 0 || !Number.isFinite(parseFloat(price))) {
+          console.log("Invalid inputs");
+          return;
+      }
+      
+      const body = JSON.stringify({name, price});
+      fetch('http://localhost:3000/menu_item', {
+        method: "PUT",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+
+      // Find the menu item's id with the given name
+      const menuItem = menuItems.find(item => item.name === name);
+
+      if (!menuItem) {
+          console.warn(`Menu item not found: ${name}`);
+          return;
+      }
+
+      const menuItemId = menuItem.id;
+
+      deleteItemIngredients(name, menuItemId);
+      addItemIngredients(menuItemId, usedIngredients);
+      LoadMenuItemTable();
     } catch (err) {
         console.log("Error Message");
         console.log('Network error:', err.message);

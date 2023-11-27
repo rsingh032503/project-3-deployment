@@ -160,6 +160,18 @@ app.delete('/menu_item/:id', async (req, res) => {
     }
 });
 
+app.put('/menu_item', async (req, res) => {
+    try {
+        const name = req.body.name;
+        const price = req.body.price; 
+        await pool.query(`UPDATE menu_item SET price = ${price} WHERE name = '${name}'`);
+        res.json('Menu item price was updated!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error updating ingredient');
+    }
+});
+
 //Adds an ingredient to the data
 app.post('/ingredient', async (req, res) => {
 
