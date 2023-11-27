@@ -5,6 +5,7 @@ import '../styles/Manager.css';
 function Manager() {
   const [menuItems, setMenuItems] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [joinTable, setJoinTable] = useState([]);
 
   const [selectedingredientName, setSelectedIngredientName] = useState('');
   const [selectedPrice, setSelectedPrice] = useState('');
@@ -15,6 +16,13 @@ function Manager() {
   const [selectedMenuItemName, setSelectedMenuItemName] = useState('');
   const [selectedMenuItemIngredients, setSelectedMenuItemIngredients] = useState([]);
   const [selectedMenuItemPrice, setSelectedMenuItemPrice] = useState('');
+  const menuItemIDs = [];
+
+  const joinIDs = [];
+
+  const [salesStart, setSalesStart] = useState('');
+  const [salesEnd, setSalesEnd] = useState('');
+  const [excessStart, setExcessStart] = useState('');
 
   useEffect(() => {
     fetch('https://project-3-09m-server.onrender.com/menu_item')
@@ -26,49 +34,224 @@ function Manager() {
       .then(response => response.json())
       .then(data => setIngredients(data.ingredient))
       .catch(error => console.error('Error:', error));
+
+    fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table')
+      .then(response => response.json())
+      .then(data => setJoinTable(data.ingredient_menu_item_join_table))
+      .catch(error => console.error('Error:', error));
   }, []);
 
   for(let i = 0; i < ingredients.length; i++){
     ingredientIDs.push(ingredients[i].id);
   }
 
+  for(let i = 0; i < menuItems.length; i++){
+    menuItemIDs.push(menuItems[i].id);
+  }
+
+  for(let i = 0; i < joinTable.length; i++) {
+    joinIDs.push(joinTable[i].join_id)
+  }
+
   //Refresh the ingredients table 
   const LoadIngredientTable = () => {
-    fetch('http://localhost:3000/ingredient')
-    .then(response => response.json())
-    .then(data => setIngredients(data.ingredient))
-    .catch(error => console.error('Error:', error));
-  };
-
-  //Refresh the menu item table
-  //ZAK USES THIS FUNCTION FOR REFRESHING YOUR MENU ITEM TABLES
-  const LoadMenuItemTable = () => {
     fetch('https://project-3-09m-server.onrender.com/ingredient')
     .then(response => response.json())
     .then(data => setIngredients(data.ingredient))
     .catch(error => console.error('Error:', error));
   };
 
-  const handleMenuItemDelete = async (name) => {
-    axios
-    .delete(`https://project-3-09m-server.onrender.com/menu_item/${name}`)
-    .then((response) => {
-      if (response.status === 200) {
-        // If the deletion is successful, update the state to reflect the changes
-        const updatedItems = menuItems.filter(item => item.name !== name);
-        setMenuItems(updatedItems);
-      } else {
-        console.error('Error deleting menu item');
-      }
-    })
-    .catch((error) => {
-      console.error('Error deleting menu item:', error);
-    });
+  //Refresh the menu item table
+  // ABHINAV SABOTAGES ZAK AGAIN
+  const LoadMenuItemTable = () => {
+    fetch('https://project-3-09m-server.onrender.com/menu_item')
+    .then(response => response.json())
+    .then(data => setMenuItems(data.menu_item))
+    .catch(error => console.error('Error:', error));
   };
+
+  const LoadJoinTable = () => {
+    fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table')
+    .then(response => response.json())
+    .then(data => setJoinTable(data.ingredient_menu_item_join_table))
+    .catch(error => console.error('Error:', error));
+  };
+
+  function handleMenuItemAdd(name, usedIngredients, price) {
+    try {
+        // Input validation
+        if (price < 0 || !Number.isFinite(parseFloat(price))) {
+            console.log("Invalid inputs");
+            return;
+        }
+
+        // Generate a new id and table values for a new menu item
+        const id = Math.max(...menuItemIDs) + 1;
+        menuItemIDs.push(id);
+
+        const menuItemBody = JSON.stringify({ id, price, name });
+
+        fetch('http://localhost:3000/menu_item', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: menuItemBody,
+        })
+        .then(response => response.json())
+        .then(menuItemResponse => {
+            LoadMenuItemTable();
+            console.log(menuItemResponse);
+            addItemIngredients(id, usedIngredients);
+        })
+        .catch(error => console.error('Error adding menu item:', error));
+    } catch (err) {
+        console.log("Error Message");
+        console.log('Network error:', err.message);
+    }
+  }
+
+  function handleMenuItemDelete(name) {
+    try {
+        // Find the menu item's id with the given name
+        const menuItem = menuItems.find(item => item.name === name);
+
+        if (!menuItem) {
+            console.warn(`Menu item not found: ${name}`);
+            return;
+        }
+
+        const menuItemId = menuItem.id;
+
+        deleteItemIngredients(name, menuItemId);
+
+        // Delete the menu item from the menu_item table
+        fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        })
+        .then(response => {
+            if (response.ok) {
+                LoadMenuItemTable(); // Refresh the menu item table after deletion
+                console.log(`Menu item deleted: ${name}`);
+            } else {
+                console.error(`Error deleting menu item: ${response.statusText}`);
+            }
+        })
+        .catch(error => console.error('Error deleting menu item:', error));
+
+    } catch (err) {
+        console.log("Error Message");
+        console.log('Network error:', err.message);
+    }
+  }
+
+  function addItemIngredients(menuItemId, usedIngredients) {
+    // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
+    usedIngredients.forEach(ingredientName => {
+      const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
+
+      const join_id = Math.max(...joinIDs) + 1;
+      joinIDs.push(join_id);
+
+      if (ingredient) {
+          const joinTableBody = JSON.stringify({
+              join_id: join_id,
+              ingredient_id: ingredient.id,
+              menu_item_id: menuItemId,
+              quantity: 1.0,
+          });
+
+          fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: joinTableBody,
+          })
+          .then(response => response.json())
+          .then(response=> {
+            LoadJoinTable();
+            console.log(response);
+          })
+          .catch(error => console.error('Error adding row to join table:', error));
+      } else {
+          console.warn(`Ingredient not found: ${ingredientName}`);
+      }
+    });
+  }
+
+  function deleteItemIngredients(name, menuItemId) {
+    // Delete rows with the menu item id from ingredient_menu_item_join_table
+    fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log(`Rows deleted from ingredient_menu_item_join_table for menu item: ${name}`);
+        } else {
+            console.error(`Error deleting rows from ingredient_menu_item_join_table: ${response.statusText}`);
+        }
+    })
+    .catch(error => console.error('Error deleting rows from ingredient_menu_item_join_table:', error));
+  }
+
+  function handleMenuItemUpdate(name, usedIngredients, price) {
+    try {
+      // Input validation
+      if (price < 0 || !Number.isFinite(parseFloat(price))) {
+          console.log("Invalid inputs");
+          return;
+      }
+      
+      const body = JSON.stringify({name, price});
+      fetch('http://localhost:3000/menu_item', {
+        method: "PUT",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+
+      // Find the menu item's id with the given name
+      const menuItem = menuItems.find(item => item.name === name);
+
+      if (!menuItem) {
+          console.warn(`Menu item not found: ${name}`);
+          return;
+      }
+
+      const menuItemId = menuItem.id;
+
+      deleteItemIngredients(name, menuItemId);
+      addItemIngredients(menuItemId, usedIngredients);
+      LoadMenuItemTable();
+    } catch (err) {
+        console.log("Error Message");
+        console.log('Network error:', err.message);
+    }
+  }
 
   const handleMenuItemClick = (item) => {
     // Update the state to store the selected item
     setSelectedItem(item);
+    setSelectedMenuItemName(item.name);
+
+    // Filter the joinTable for the selected menu item id
+    const selectedMenuItemJoinData = joinTable.filter(joinData => joinData.menu_item_id === item.id);
+
+    // Extract ingredient names from the filtered joinTableData
+    const selectedMenuItemIngredientNames = selectedMenuItemJoinData.map(joinData => {
+      const ingredient = ingredients.find(ingredient => ingredient.id === joinData.ingredient_id);
+      return ingredient ? ingredient.name : null;
+    });
+
+    // Remove null values (in case an ingredient was not found)
+    const filteredIngredientNames = selectedMenuItemIngredientNames.filter(name => name !== null);
+
+    // Update the state with the list of ingredient names
+    setSelectedMenuItemIngredients(filteredIngredientNames);
+
+    setSelectedMenuItemPrice(item.price);
   };
 
   const handleCheckboxChange = (e) => {
@@ -294,16 +477,51 @@ function Manager() {
         </div>
 
         <div className="ButtonColumn">
-          <button>Add Menu Item</button>
-          <button>Update Menu Item</button>
-          <button onClick={handleMenuItemDelete.bind(this,menuItems.name)}>Delete Menu Item</button>
+          <button onClick={handleMenuItemAdd.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Add Menu Item</button>
+          <button onClick={handleMenuItemUpdate.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Update Menu Item</button>
+          <button onClick={handleMenuItemDelete.bind(this, selectedMenuItemName)}>Delete Menu Item</button>
         </div>
       </div>
 
       <div className="ReportButtons">
-        <button>Sales Report</button>
-        <button>Excess Report</button>
-        <button onClick={ e =>{ console.log("Restock Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button>
+        <div className="ButtonColumn">
+          <label className="TextboxLabel">Start Date</label>
+          <input
+            id="salesStartTextbox"
+            type="text"
+            value={salesStart}
+            onChange={e => setSalesStart(e.target.value)}
+          />
+          <label className="TextboxLabel">End Date</label>
+          <input
+            id="salesEndTextbox"
+            type="text"
+            value={salesEnd}
+            onChange={e => setSalesEnd(e.target.value)}
+          />
+          <button onClick={() => {
+            console.log("Sales Report Button clicked!");
+            const url = `http://localhost:5173/sales-report?start=${salesStart}&end=${salesEnd}`;
+            window.open(url);
+          }}>Sales Report</button>
+        </div>
+        
+        <div className='ButtonColumn'>
+          <label className="TextboxLabel">Start Date</label>
+          <input
+            id="excessTextbox"
+            type="text"
+            value={excessStart}
+            onChange={e => setExcessStart(e.target.value)}
+          />
+          <button onClick={() => {
+            console.log("Excess Report Button clicked!");
+            const url = `http://localhost:5173/excess-report?start=${excessStart}`;
+            window.open(url);
+          }}>Excess Report</button>
+        </div>
+        
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("https://project-3-09m-server.onrender.com/restock-report")}}>Restock Report</button>
       </div>
       
     </div>

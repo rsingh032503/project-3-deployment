@@ -98,16 +98,77 @@ app.get('/order_table', (req, res) => {
     getAllFromTable('order_table', res);
 });
 
-//Deletes a menu item based on the name that is provided
-app.delete("/menu_item/:name", async (req, res) =>{
-    try{
-        const {name} = req.params;
-        const deleteTodo = await pool.query("DELETE FROM menu_item WHERE name = $1", [
-            name
-        ]);
-        res.json("Menu Item was deleted!")
-    }catch(err){
-        console.log(err.message);
+app.post('/menu_item', async (req, res) => {
+    const name = req.body.name;
+    const price = req.body.price;
+    const id = req.body.id;
+    try {
+      const insertQuery = 'INSERT INTO menu_item VALUES ($1, $2, $3)';
+      await pool.query(insertQuery, [id, price, name]);
+      res.json('Menu item was added!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error adding menu item');
+    }
+});
+
+app.post('/ingredient_menu_item_join_table', async (req, res) => {
+    const id = req.body.join_id;
+    const ingredient_id = req.body.ingredient_id;
+    const menu_item_id = req.body.menu_item_id;
+    const quantity = req.body.quantity;
+    try {
+      const insertQuery = 'INSERT INTO ingredient_menu_item_join_table VALUES ($1, $2, $3, $4)';
+      await pool.query(insertQuery, [id, ingredient_id, menu_item_id, quantity]);
+      res.json('Menu item ingredients were added!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error adding menu item ingredients');
+    }
+});
+
+app.delete('/ingredient_menu_item_join_table/menu-item/:id', async (req, res) => {
+    try {
+        const menuItemId = req.params.id;
+
+        const deleteRowsQuery = 'DELETE FROM ingredient_menu_item_join_table WHERE menu_item_id = $1';
+        await pool.query(deleteRowsQuery, [menuItemId]);
+
+        res.status(200).json(`Rows in ingredient_menu_item_join_table deleted for menu item id: ${menuItemId}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error deleting rows in ingredient_menu_item_join_table');
+    }
+});
+
+app.delete('/menu_item/:id', async (req, res) => {
+    try {
+        const menuItemId = req.params.id;
+
+        // First, delete rows in ingredient_menu_item_join_table
+        const deleteRowsQuery = 'DELETE FROM ingredient_menu_item_join_table WHERE menu_item_id = $1';
+        await pool.query(deleteRowsQuery, [menuItemId]);
+
+        // Then, delete the menu item from the menu_item table
+        const deleteMenuItemQuery = 'DELETE FROM menu_item WHERE id = $1';
+        await pool.query(deleteMenuItemQuery, [menuItemId]);
+
+        res.status(200).json(`Menu item deleted with id: ${menuItemId}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error deleting menu item');
+    }
+});
+
+app.put('/menu_item', async (req, res) => {
+    try {
+        const name = req.body.name;
+        const price = req.body.price; 
+        await pool.query(`UPDATE menu_item SET price = ${price} WHERE name = '${name}'`);
+        res.json('Menu item price was updated!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error updating ingredient');
     }
 });
 
@@ -277,6 +338,86 @@ app.post('/submitOrder', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error while attempting to add order' });
+    }
+});
+
+app.get('/sales-report', async (req, res) => {
+    try {
+      const start = req.query.start;
+      const end = req.query.end;
+  
+      // Query to filter orders based on the time window
+      const orderQuery = 'SELECT * FROM order_table WHERE date_placed >= $1 AND date_placed <= $2';
+      const orderResult = await pool.query(orderQuery, [start, end]);
+      const filteredOrders = orderResult.rows;
+  
+      // Query to retrieve menu item sales from join table
+      const salesQuery = `
+        SELECT
+          m.name AS menu_item_name,
+          m.price AS menu_item_price,
+          jo.quantity,
+          (m.price * jo.quantity) AS total_sales
+        FROM
+          menu_item_order_join_table jo
+        JOIN
+          menu_item m ON jo.menuitemid = m.id
+        WHERE
+          jo.orderid = ANY($1::int[])
+      `;
+      const salesResult = await pool.query(salesQuery, [filteredOrders.map(order => order.id)]);
+      const menuItemSales = salesResult.rows;
+  
+      res.json({ sales: menuItemSales });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error getting sales report');
+    }
+});
+
+app.get('/excess-report', async (req, res) => {
+    try {
+        const start = req.query.start;
+
+        // Single query to retrieve excess report data
+        const excessReportQuery = `
+            SELECT
+                i.id AS ingredient_id,
+                i.name AS ingredient_name,
+                i.quantity AS original_quantity,
+                COALESCE(SUM(jo.quantity), 0) AS amount_sold_since_timestamp
+            FROM
+                ingredient i
+            LEFT JOIN
+                ingredient_menu_item_join_table im ON i.id = im.ingredient_id
+            LEFT JOIN
+                menu_item_order_join_table jo ON im.menu_item_id = jo.menuitemid
+            LEFT JOIN
+                order_table o ON jo.orderid = o.id
+            WHERE
+                o.date_placed >= $1
+            GROUP BY
+                i.id
+        `;
+
+        const excessReportResult = await pool.query(excessReportQuery, [start]);
+        const excessIngredients = excessReportResult.rows.map(ingredient => {
+            const quantityAtTimestamp = Number(ingredient.original_quantity) + Number(ingredient.amount_sold_since_timestamp);
+            const percentageSold = (ingredient.amount_sold_since_timestamp / quantityAtTimestamp) * 100;
+
+            return {
+                id: ingredient.ingredient_id,
+                name: ingredient.ingredient_name,
+                quantityAtTimestamp: quantityAtTimestamp,
+                amountSoldSinceTimestamp: ingredient.amount_sold_since_timestamp,
+                percentageSold: percentageSold,
+            };
+        });
+
+        res.json({ excessIngredients });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error getting excess report');
     }
 });
 
