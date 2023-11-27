@@ -6,7 +6,7 @@ function RestockReport(){
 
     useEffect(() => {
         //Fetch understocked ingredients and update state
-        fetch('http://localhost:3000/understocked')
+        fetch('https://project-3-09m-server.onrender.com/understocked')
           .then(response => response.json())
           .then(data => setUnderstockedIngredients(data.understockedIngredients))
           .catch(error => console.error('Error fetching understocked ingredients:', error));
