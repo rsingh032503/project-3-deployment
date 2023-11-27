@@ -534,7 +534,7 @@ function Manager() {
             to={{
               pathname: "/excess-report",
               search: `?start=${excessStart}`,
-            }}>Restock Report</Link>
+            }}>Excess Report</Link>
             </button>
         </div>
         

@@ -415,8 +415,7 @@ app.get('/excess-report', async (req, res) => {
                 amountSoldSinceTimestamp: ingredient.amount_sold_since_timestamp,
                 percentageSold: percentageSold,
             };
-        });
-
+        }).filter(ingredient => ingredient.percentageSold < 10);
         res.json({ excessIngredients });
     } catch (err) {
         console.error(err);
