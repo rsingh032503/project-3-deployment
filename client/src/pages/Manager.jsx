@@ -383,7 +383,7 @@ function Manager() {
             {ingredients.map((ingredient) => (
               <tr key={ingredient.id}>
                 <td>{ingredient.name}</td>
-                <td>${ingredient.restock_price}</td>
+                <td>${ingredient.restock_price.toFixed(2)}</td>
                 <td>{ingredient.quantity}</td>
               </tr>
             ))}
