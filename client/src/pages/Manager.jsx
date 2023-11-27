@@ -502,9 +502,9 @@ function Manager() {
           />
           <button onClick={() => {
             console.log("Sales Report Button clicked!");
-            const url = `https://project-3-09m.onrender.com/sales-report?start=${salesStart}&end=${salesEnd}`;// const url = `http://localhost:5173/sales-report?start=${salesStart}&end=${salesEnd}`;
-            window.open(url);
-          }}>Sales Report</button>
+          }}>
+            <Link className={((location.pathname === "/sales-report")? "active":"" )} to="/sales-report">Sales Report</Link>
+          </button>
         </div>
         
         <div className='ButtonColumn'>
@@ -517,9 +517,9 @@ function Manager() {
           />
           <button onClick={() => {
             console.log("Excess Report Button clicked!");
-            const url = `https://project-3-09m.onrender.com/excess-report?start=${excessStart}`; // const url = `http://localhost:5173/excess-report?start=${excessStart}`;
-            window.open(url);
-          }}>Excess Report</button>
+          }}>
+            <Link className={((location.pathname === "/excess-report")? "active":"" )} to="/excess-report">Excess Report</Link>
+            </button>
         </div>
         
         <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}> 
