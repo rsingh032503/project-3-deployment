@@ -145,55 +145,64 @@ function Manager() {
   }
 
   function addItemIngredients(menuItemId, usedIngredients) {
+    // Create an array to hold all the promises
+    const promises = [];
+  
     // Iterate through usedIngredients to get the ingredient IDs and add rows to join table
     usedIngredients.forEach(ingredientName => {
       const ingredient = ingredients.find(ingredient => ingredient.name === ingredientName);
-
+  
       const join_id = Math.max(...joinIDs) + 1;
       joinIDs.push(join_id);
-
+  
       if (ingredient) {
-          const joinTableBody = JSON.stringify({
-              join_id: join_id,
-              ingredient_id: ingredient.id,
-              menu_item_id: menuItemId,
-              quantity: 1.0,
-          });
-
-          fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', { // fetch('http://localhost:3000/ingredient_menu_item_join_table', {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: joinTableBody,
-          })
+        const joinTableBody = JSON.stringify({
+          join_id: join_id,
+          ingredient_id: ingredient.id,
+          menu_item_id: menuItemId,
+          quantity: 1.0,
+        });
+  
+        // Create a promise for each fetch operation
+        const promise = fetch('https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', { // fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: joinTableBody,
+        })
           .then(response => response.json())
-          .then(response=> {
+          .then(response => {
             LoadJoinTable();
             console.log(response);
           })
           .catch(error => console.error('Error adding row to join table:', error));
+  
+        promises.push(promise);
       } else {
-          console.warn(`Ingredient not found: ${ingredientName}`);
+        console.warn(`Ingredient not found: ${ingredientName}`);
       }
     });
+  
+    // Return a promise that resolves when all fetch operations are complete
+    return Promise.all(promises);
   }
 
   function deleteItemIngredients(name, menuItemId) {
-    // Delete rows with the menu item id from ingredient_menu_item_join_table
-    fetch(`https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table/menu-item/${menuItemId}`, { // fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
+    // Return a promise for the fetch operation
+    return fetch(`https://project-3-09m-server.onrender.com/ingredient_menu_item_join_table/menu-item/${menuItemId}`, { // fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })
-    .then(response => {
+      .then(response => {
         if (response.ok) {
-            console.log(`Rows deleted from ingredient_menu_item_join_table for menu item: ${name}`);
+          console.log(`Rows deleted from ingredient_menu_item_join_table for menu item: ${name}`);
         } else {
-            console.error(`Error deleting rows from ingredient_menu_item_join_table: ${response.statusText}`);
+          console.error(`Error deleting rows from ingredient_menu_item_join_table: ${response.statusText}`);
         }
-    })
-    .catch(error => console.error('Error deleting rows from ingredient_menu_item_join_table:', error));
+      })
+      .catch(error => console.error('Error deleting rows from ingredient_menu_item_join_table:', error));
   }
 
-  function handleMenuItemUpdate(name, usedIngredients, price) {
+  async function handleMenuItemUpdate(name, usedIngredients, price) {
     try {
       // Input validation
       if (price < 0 || !Number.isFinite(parseFloat(price))) {
@@ -222,8 +231,8 @@ function Manager() {
 
       const menuItemId = menuItem.id;
 
-      deleteItemIngredients(name, menuItemId);
-      addItemIngredients(menuItemId, usedIngredients);
+      await deleteItemIngredients(name, menuItemId);
+      await addItemIngredients(menuItemId, usedIngredients);
       LoadMenuItemTable();
     } catch (err) {
         console.log("Error Message");
