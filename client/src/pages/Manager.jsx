@@ -91,7 +91,7 @@ function Manager() {
 
         const menuItemBody = JSON.stringify({ id, price, name });
 
-        fetch('http://localhost:3000/menu_item', {
+        fetch('http://project-3-09m-server.onrender.com/menu_item', { // fetch('http://localhost:3000/menu_item', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: menuItemBody,
@@ -124,7 +124,7 @@ function Manager() {
         deleteItemIngredients(name, menuItemId);
 
         // Delete the menu item from the menu_item table
-        fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
+        fetch(`http://project-3-09m-server.onrender.com/menu_item/${menuItemId}`, { // fetch(`http://localhost:3000/menu_item/${menuItemId}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
         })
@@ -160,7 +160,7 @@ function Manager() {
               quantity: 1.0,
           });
 
-          fetch('http://localhost:3000/ingredient_menu_item_join_table', {
+          fetch('http://project-3-09m-server.onrender.com/ingredient_menu_item_join_table', { // fetch('http://localhost:3000/ingredient_menu_item_join_table', {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: joinTableBody,
@@ -179,7 +179,7 @@ function Manager() {
 
   function deleteItemIngredients(name, menuItemId) {
     // Delete rows with the menu item id from ingredient_menu_item_join_table
-    fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
+    fetch(`http://project-3-09m-server.onrender.com/ingredient_menu_item_join_table/menu-item/${menuItemId}`, { // fetch(`http://localhost:3000/ingredient_menu_item_join_table/menu-item/${menuItemId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })
@@ -202,7 +202,7 @@ function Manager() {
       }
       
       const body = JSON.stringify({name, price});
-      fetch('http://localhost:3000/menu_item', {
+      fetch('http://project-3-09m-server.onrender.com/menu_item', { // fetch('http://localhost:3000/menu_item', {
         method: "PUT",
         headers: {"Content-Type": "application/json" },
         body: body
@@ -501,7 +501,7 @@ function Manager() {
           />
           <button onClick={() => {
             console.log("Sales Report Button clicked!");
-            const url = `http://localhost:5173/sales-report?start=${salesStart}&end=${salesEnd}`;
+            const url = `https://project-3-09m.onrender.com/sales-report?start=${salesStart}&end=${salesEnd}`;// const url = `http://localhost:5173/sales-report?start=${salesStart}&end=${salesEnd}`;
             window.open(url);
           }}>Sales Report</button>
         </div>
@@ -516,12 +516,13 @@ function Manager() {
           />
           <button onClick={() => {
             console.log("Excess Report Button clicked!");
-            const url = `http://localhost:5173/excess-report?start=${excessStart}`;
+            const url = `https://project-3-09m.onrender.com/excess-report?start=${excessStart}`; // const url = `http://localhost:5173/excess-report?start=${excessStart}`;
             window.open(url);
           }}>Excess Report</button>
         </div>
         
-        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("https://project-3-09m-server.onrender.com/restock-report")}}>Restock Report</button>
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("https://project-3-09m.onrender.com/restock-report")}}>Restock Report</button>
+        {/* <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button> */}
       </div>
       
     </div>
