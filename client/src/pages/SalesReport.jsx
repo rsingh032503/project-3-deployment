@@ -9,7 +9,7 @@ function SalesReport() {
     const salesEnd = new URLSearchParams(window.location.search).get('end');
 
     if (salesStart && salesEnd) {
-      fetch(`https://project-3-09m-server.onrender.com/sales-report?start=${salesStart}&end=${salesEnd}`)
+      fetch(`http://localhost:3000/sales-report?start=${salesStart}&end=${salesEnd}`)
         .then(response => response.json())
         .then(data => setMenuItemsSales(data.sales))
         .catch(error => console.error('Error fetching sales report:', error));
@@ -33,7 +33,7 @@ function SalesReport() {
             <tr key={menuItem.menu_item_name}>
               <td>{menuItem.menu_item_name}</td>
               <td>{menuItem.menu_item_price}</td>
-              <td>{menuItem.quantity}</td>
+              <td>{menuItem.total_quantity}</td>
               <td>{menuItem.total_sales}</td>
             </tr>
           ))}
