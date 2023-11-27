@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Cart.css';
+import { getCart, removeFromCart, clearCart } from '../cart';
 
 import { Link, useLocation } from 'react-router-dom';
 function Cart(){
     const [menuItems, setMenuItems] = useState([]);
     let [loading, setLoading] = useState(true);
-    let [cart, setCart] = useState([])
+    let [cart, setCart] = useState([]);
+    let [quantity, setQuantity] = useState([]);
 
     useEffect(()=> {
         fetch('https://project-3-09m-server.onrender.com/menu_item')
@@ -15,6 +17,8 @@ function Cart(){
             .catch(error => console.error('Error:', error));
     },[]);
 
+    const location = useLocation();
+
     if(loading){
         return(
             <div>
@@ -23,18 +27,26 @@ function Cart(){
         );
     }
     else{
-        const location = useLocation();
+        let [cart,quantity] = getCart();
 
         function handleCheckout() {
             const name = prompt("Please enter the customer's name:");
             const email = prompt("Please enter the customer's email:");
           
             if (name && email) {
+                for(let i = 0; i < quantity.length(); i++){
+                    for(let j = 1; j < quantity[i]; j++){
+                        cart.push(cart[i]);
+                    }
+                }
                 const customer = { name, email };
                 submitOrder(cart, customer);
             } else {
                 alert("Please enter the customer's name and email to proceed with the checkout.");
             }
+            clearCart();
+            setCart([]);
+            setQuantity([]);
         }
 
         function submitOrder(items, customer) {
@@ -49,45 +61,37 @@ function Cart(){
             .then(response => response.json())
             .then(data => {
                 alert('Order submitted successfully');
-                setCart([]); // Clear the order summary
+                clearCart(); // Clear the order summary
+                [cart,quantity] = getCart();
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
         }
 
-        function removeFromCart(item){
-            if(item.quantity > 1){
-                item.quantity -= 1;
-            }
-            else{
-                let ind = cart.indexOf(item);
-                if(index != -1){
-                    cart.splice(ind,1);
-                }
-                else{
-                    console.error("could not remove item from cart: ", item);
-                }
-            }
-        }
-
-
+        console.log(cart);
 
         return(
             <div>
                 <h2>Items:</h2>
-                <tbody>
-                    {cart.map((item) => {
-                        <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.price}</td>
-                            <td>{"x" + item.quantity}</td>
-                            <td><button onClick={removeFromCart(item)}>X</button></td>
-                        </tr>   
-                    })}
-                </tbody>
-                <button onClick={handleCheckout}>Check Out</button>
+                <table>
+                    <tbody>
+                        {cart.map((item) => {
+                            <div>
+                                <tr key={item.id}>
+                                    <td>{item.name}</td>
+                                    <td>{item.price}</td>
+                                    <td>{"x" + item.quantity}</td>
+                                    <td><button onClick={removeFromCart.bind(this,item)}>X</button></td>
+                                </tr>   
+                            </div>
+                        })}
+                    </tbody>
+                </table>
+                <button onClick={handleCheckout.bind(this)}>Check Out</button>
             </div>
         );
     }
 }
+
+export default Cart;

@@ -6,7 +6,7 @@ import '../styles/UserTypeNavBar.css';
 
 function UserTypeNavBar() {
     let location = useLocation();
-    console.log(location.pathname === "/");
+    //console.log(location.pathname === "/");
     return (
         <div className="navbar">
             <Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard</Link>
