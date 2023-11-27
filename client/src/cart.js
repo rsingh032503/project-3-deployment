@@ -25,19 +25,21 @@ export const getCart = () => {
 export const removeFromCart = (item) => {
     let index = ids.indexOf(item.id);
     if(quantity[index] > 1){
-        quantity[index] -= 1;
+        quantity[index] --;
+        console.log("decreaces quantitity of itme: ",item);
     }
-    else if (index == 1){
+    else if (quantity[index] == 1){
         cart.splice(index,1);
         quantity.splice(index,1);
         ids.splice(index,1);
+        console.log("removed item to cart: ",item);
     }
     else{
         console.error("could not remove item from cart: ", item);
         return;
     }
     size--;
-    console.log("removed item to cart: ",item);
+    
 }
 
 export const getCartSize = () => {
@@ -45,9 +47,20 @@ export const getCartSize = () => {
 }
 
 export const clearCart = () => {
+    console.warn("clearing the cart");
     cart = [];
     quantity = [];
     ids = [];
     size = 0;
+}
+
+export const getSubmitable = () => {
+    let ret = [];
+    for(let i = 0 ; i < cart.length; i++){
+        for(let j = 0; j < quantity[i]; j++){
+            ret.push(cart[i]);
+        }
+    }
+    return ret;
 }
 
