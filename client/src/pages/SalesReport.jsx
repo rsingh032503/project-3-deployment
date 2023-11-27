@@ -4,7 +4,7 @@ function SalesReport() {
   const [menuItemsSales, setMenuItemsSales] = useState([]);
 
   useEffect(() => {
-    // Fetch sales report and update state
+    // Fetch sales report
     const salesStart = new URLSearchParams(window.location.search).get('start');
     const salesEnd = new URLSearchParams(window.location.search).get('end');
 
