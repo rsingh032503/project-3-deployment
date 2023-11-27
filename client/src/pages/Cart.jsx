@@ -70,22 +70,23 @@ function Cart(){
         }
 
         console.log(cart);
+        console.log(quantity);
 
         return(
             <div>
                 <h2>Items:</h2>
                 <table>
                     <tbody>
-                        {cart.map((item) => {
+                        {cart.map((item) => (
                             <div>
                                 <tr key={item.id}>
                                     <td>{item.name}</td>
-                                    <td>{item.price}</td>
-                                    <td>{"x" + item.quantity}</td>
+                                    <td>${item.price}</td>
+                                    <td>{"x" + quantity[cart.indexOf(item)]}</td>
                                     <td><button onClick={removeFromCart.bind(this,item)}>X</button></td>
                                 </tr>   
                             </div>
-                        })}
+                        ))}
                     </tbody>
                 </table>
                 <button onClick={handleCheckout.bind(this)}>Check Out</button>
