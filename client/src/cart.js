@@ -64,3 +64,11 @@ export const getSubmitable = () => {
     return ret;
 }
 
+export const getTotal = () => {
+    let total = 0.0;
+    for(let i = 0 ; i < cart.length; i++){
+        total += (cart[i].price * quantity[i]);
+    }
+    return total;
+}
+

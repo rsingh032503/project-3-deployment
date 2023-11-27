@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Cart.css';
-import { getCart, removeFromCart, clearCart, getSubmitable } from '../cart';
+import { getCart, removeFromCart, clearCart, getSubmitable, getTotal } from '../cart';
 
 import { Link, useLocation } from 'react-router-dom';
 function Cart(){
@@ -121,6 +121,10 @@ function Cart(){
                                 </tr>   
                             </div>
                         ))}
+                        <tr key="total">
+                            <td>Total:</td>
+                            <td>${getTotal()}</td>
+                        </tr>
                     </tbody>
                 </table>
                 <button onClick={() => handleCheckout()}>Check Out</button>
