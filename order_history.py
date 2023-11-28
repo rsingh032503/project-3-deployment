@@ -18,6 +18,8 @@ class order:
         self.total = to
         self.customer_id = c_id
         self.date_placed = d_pl
+        self.items = []
+        self.quantities = []
 
     def add_menu_item(self,item):
         if(item in self.items):
@@ -179,9 +181,9 @@ for c in customers:
 
 print(f"num orders via customers: {num_orders}")
 print(f"num orders via order list: {len(orders)}")
-order_file = open("tables/order_table.csv",'w+')
-order_item_join_file = open("tables/menu_item_order_join_table.csv",'w+')
-customer_order_join_file = open("tables/customer_order_join_file.csv",'w+')
+order_file = open("tables/order_table.csv",'w')
+order_item_join_file = open("tables/menu_item_order_join_table.csv",'w')
+customer_order_join_file = open("tables/customer_order_join_file.csv",'w')
 
 order_file.write(f"id,totalprice,date_placed\n")
 customer_order_join_file.write(f"orderid,customerid\n")
@@ -209,7 +211,14 @@ with connection:
                 if(finished_orders % 1000 == 0):
                     print(f"finished orders: {finished_orders}")
         
-        
+        order_file.close()
+        order_item_join_file.close()
+        customer_order_join_file.close()
+
+
+        order_file = open("tables/order_table.csv",'r')
+        order_item_join_file = open("tables/menu_item_order_join_table.csv",'r')
+        customer_order_join_file = open("tables/customer_order_join_file.csv",'r')
         cursor.copy_from(order_file,'order_table',sep=',',columns=["id","totalprice","date_placed"])
         cursor.copy_from(customer_order_join_file,'customer_order_join_table',sep=',',columns=["orderid","customerid"])
         cursor.copy_from(order_item_join_file,'menu_item_order_join_table',sep=',',columns=["menuitemid","orderid","quantity"])
@@ -222,7 +231,7 @@ print(f"total remaining: {total}")
 
 """
 Three commands to copy the files into table must be in tables folder when entering the db
-\copy order_table from 'order_table.csv' CSV HEADER;
-\copy customer_order_join_table (orderid,customerid) from 'customer_order_join_file.csv' CSV HEADER;
-\copy menu_item_order_join_table (menuitemid,orderid,quantity) from 'menu_item_order_join_table.csv' CSV HEADER;
+\copy order_table from 'tables/order_table.csv' CSV HEADER;
+\copy customer_order_join_table (orderid,customerid) from 'tables/customer_order_join_file.csv' CSV HEADER;
+\copy menu_item_order_join_table (menuitemid,orderid,quantity) from 'tables/menu_item_order_join_table.csv' CSV HEADER;
  """
