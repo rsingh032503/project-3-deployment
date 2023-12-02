@@ -3,7 +3,10 @@
     "start": "concurrently \"npm run server --prefix ./server\" \"npm run dev --prefix ./client\""
   },
   "dependencies": {
+    "@google-cloud/translate": "^8.0.2",
     "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "google-translate-api": "^2.3.0",
     "react-router-dom": "^6.18.0"
   },
   "devDependencies": {
