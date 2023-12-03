@@ -3,14 +3,18 @@ import '../styles/Customer.css';
 import { images } from '../images.js';
 import { Link } from 'react-router-dom';
 import { getCartSize } from '../cart.js';
-
+import { useLanguage } from '../LanguageContext';
+import FontSizeIncreaser from '../FontSizeIncreaser';
 
 function Customer() {
     const [menuItems, setMenuItems] = useState([]);
     const [menu_ingredient_join, setJoin] = useState([]);
     const [orderSummary, setOrderSummary] = useState([]);
-    const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'en');
+    const { language, setLanguage } = useLanguage();
     const [translated, setTranslated] = useState(false);
+    const [fontSize, setFontSize] = useState(16);
+    const [drinkFontSize, setDrinkFontSize] = useState(18);
+    const [customerViewFontSize, setCustomerViewFontSize] = useState(20);
 
     useEffect(() => {
         // Check for saved language on component mount
@@ -86,7 +90,8 @@ function Customer() {
             for (const element of elementsToTranslate) {
               const textToTranslate = element.innerText;
         
-              const apiKey = 'AIzaSyD2cZ2edFWnb15EsgO2BvfjyJdtP9z7LLQ'; // Replace with your actual API key
+              const apiKey = 'AIzaSyD2cZ2edFWnb15EsgO2BvfjyJdtP9z7LLQ'; //API KEY
+              const targetLanguage = language === 'es' ? 'es' : 'en';
               const response = await fetch(
                 `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`,
                 {
@@ -96,7 +101,7 @@ function Customer() {
                   },
                   body: JSON.stringify({
                     q: textToTranslate,
-                    target: 'es', // Spanish language code
+                    target: targetLanguage,
                   }),
                 }
               );
@@ -106,28 +111,38 @@ function Customer() {
               if (data && data.data && data.data.translations && data.data.translations[0]) {
                 const translatedText = data.data.translations[0].translatedText;
                 element.innerText = translatedText;
-        
-                // Adjust styles for translated content if needed
-                element.style.fontWeight = 'bold'; // Add your style adjustments here
               }
             }
         
-            setTranslated(true);
+            setTranslated(!translated);
           } catch (error) {
             console.error('Error translating text:', error);
           }
         };
     
-      const handleLanguageChange = () => {
-        setLanguage('es'); 
-        setTranslated(true); 
-      };     
+        const handleLanguageChange = () => {
+            const newLanguage = language === 'es' ? 'en' : 'es';
+            setLanguage(newLanguage);
+            setTranslated((prevTranslated) => !prevTranslated);
+        };
+
+        const handleFontSizeChange = (newFontSize) => {
+            setFontSize(newFontSize);
+            setDrinkFontSize(newFontSize);
+            setCustomerViewFontSize(newFontSize);
+          };
+    
+          const handleFontSizeDecrease = () => {
+            setFontSize((prevSize) => (prevSize - 2));
+            setDrinkFontSize((prevSize) => (prevSize - 2));
+            setCustomerViewFontSize((prevSize) => (prevSize - 2));
+          };
     
     return (
         <div>
-            <h2 className='Title'data-translate>Customer View</h2>
+            <h2 style={{ fontSize: `${customerViewFontSize}px` }} className='Title'data-translate>Customer View</h2>
             <h3 className='DrinkTitle'>
-                <p data-translate>Drinks: </p>
+                <p style={{ fontSize: `${drinkFontSize}px` }} data-translate>Drinks: </p>
                 <button className='toCart'>
                     <Link className='cartLink' to="/Cart" data-translate>{"Cart (" + getCartSize() + ")"}</Link>
                 </button>
@@ -137,13 +152,17 @@ function Customer() {
                     <Link className="itemLink" key={item.id} to="/item" state={item}>
                         <button className="item">   
                             <img src={images[item.name]} alt={item.name + " image"}/>
-                            <p data-translate>{item.name}</p>
-                            <p>${item.price}</p> 
+                            <p style={{ fontSize: `${fontSize}px` }} data-translate>{item.name}</p>
+                            <p style={{ fontSize: `${fontSize}px` }} >${item.price}</p> 
                         </button>
                     </Link>
                 ))}
             </div>
-            <button onClick={handleLanguageChange}>espanol</button>
+            <button onClick={handleLanguageChange}>
+                {language === 'es' ? 'English' : 'Español'}
+            </button>
+            <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+			<button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
         </div>
     );
 }
