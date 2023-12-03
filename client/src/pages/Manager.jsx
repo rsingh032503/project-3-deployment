@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/Manager.css';
 
@@ -407,7 +406,7 @@ function Manager() {
         </div>
 
         <div className="ingredientColumn">
-            <div className="ingredientTextboxes">
+            <div className="TextboxContainer">
               <label className="TextboxLabel" htmlFor="ingredientNameTextbox">Ingredient Name</label>
               <input
                 id="ingredientNameTextbox"
@@ -417,7 +416,7 @@ function Manager() {
               />
             </div>
 
-          <div className="PriceTextboxes">
+          <div className="TextboxContainer">
             <label className="TextboxLabel" htmlFor="PriceTextbox">Price</label>
             <input
               id="PriceTextbox"
@@ -427,7 +426,7 @@ function Manager() {
             />
           </div>
 
-          <div className="QuantityTextboxes">
+          <div className="TextboxContainer">
             <label className="TextboxLabel" htmlFor="QuantityTextboxes">Quantity</label>
             <input
               id="QuantityTextbox"
@@ -441,7 +440,7 @@ function Manager() {
       
       <div className="ContentContainer">
         <div className="MenuItemsList">
-          <h3>Menu Items</h3>
+          <label>Menu Items</label>
           <ul>
             {menuItems.map((item) => (
               <li key={item.id} onClick={() => handleMenuItemClick(item)} className={selectedItem === item ? 'selected' : ''}
@@ -460,19 +459,21 @@ function Manager() {
           />
         </div>
 
-        <div className="CheckboxList">
+        <div className="CheckboxListContainer">
           <label>Ingredients</label>
-          {ingredients.map((ingredient) => (
-            <label key={ingredient.id} className="CheckboxLabel">
-              <input
-                type="checkbox"
-                value={ingredient.name}
-                checked={selectedMenuItemIngredients.includes(ingredient.name)}
-                onChange={handleCheckboxChange}
-              />
-              {ingredient.name}
-            </label>
-          ))}
+          <div className="CheckboxList">
+            {ingredients.map((ingredient) => (
+              <label key={ingredient.id} className="CheckboxLabel">
+                <input
+                  type="checkbox"
+                  value={ingredient.name}
+                  checked={selectedMenuItemIngredients.includes(ingredient.name)}
+                  onChange={handleCheckboxChange}
+                />
+                {ingredient.name}
+              </label>
+            ))}
+          </div>
         </div>
 
         <div className="TextboxContainer">
@@ -492,54 +493,89 @@ function Manager() {
         </div>
       </div>
 
-      <div className="ReportButtons">
+      <div className="ContentContainer">
         <div className="ButtonColumn">
-          <label className="TextboxLabel">Start Date</label>
-          <input
-            id="salesStartTextbox"
-            type="text"
-            value={salesStart}
-            onChange={e => setSalesStart(e.target.value)}
-          />
-          <label className="TextboxLabel">End Date</label>
-          <input
-            id="salesEndTextbox"
-            type="text"
-            value={salesEnd}
-            onChange={e => setSalesEnd(e.target.value)}
-          />
+
+          <div className="TextboxContainer">
+            <label className="TextboxLabel">Start Date</label>
+              <input
+                id="salesStartTextbox"
+                type="text"
+                value={salesStart}
+                onChange={e => setSalesStart(e.target.value)}
+              />
+          </div>
+        
+          <div className='TextboxContainer'>
+            <label className="TextboxLabel">End Date</label>
+              <input
+                id="salesEndTextbox"
+                type="text"
+                value={salesEnd}
+                onChange={e => setSalesEnd(e.target.value)}
+              />
+          </div>
+          
           <button onClick={() => {
-            console.log("Sales Report Button clicked!");
-          }}>
-            <Link className={((location.pathname === "/sales-report")? "active":"" )}
-            to={{
-              pathname: "/sales-report",
-              search: `?start=${salesStart}&end=${salesEnd}`,
-            }}>Sales Report</Link>
+            if (!salesStart || !salesEnd) {
+              alert("Please enter both start and end dates before viewing the sales report.");
+            }
+          }}
+          title = "Given a time window, display the sales by menu item from the order history.">
+            {(!salesStart || !salesEnd) ? (
+              <span>Sales Report</span> /* Render a non-clickable span if conditions are not met */
+            ) : (
+              <Link
+                className={location.pathname === "/sales-report" ? "active" : ""}
+                to={{
+                  pathname: "/sales-report",
+                  search: `?start=${salesStart}&end=${salesEnd}`,
+                }}
+              >
+                Sales Report
+              </Link>
+            )}
           </button>
+
         </div>
         
         <div className='ButtonColumn'>
-          <label className="TextboxLabel">Start Date</label>
-          <input
-            id="excessTextbox"
-            type="text"
-            value={excessStart}
-            onChange={e => setExcessStart(e.target.value)}
-          />
+          <div className='TextboxContainer'>
+            <label className="TextboxLabel">Start Date</label>
+            <input
+              id="excessTextbox"
+              type="text"
+              value={excessStart}
+              onChange={e => setExcessStart(e.target.value)}
+            />
+          </div>
+          
           <button onClick={() => {
-            console.log("Excess Report Button clicked!");
-          }}>
-            <Link className={((location.pathname === "/excess-report")? "active":"" )}
-            to={{
-              pathname: "/excess-report",
-              search: `?start=${excessStart}`,
-            }}>Excess Report</Link>
-            </button>
+            if (!excessStart) {
+              alert("Please enter the start date before viewing the excess report.");
+            }
+            }}
+            title = "Given a timestamp, display the list of inventory items that only sold less than 10% of their inventory between the timestamp and the current time, assuming no restocks have happened during the window.">
+            {(!excessStart) ? (
+              <span>Excess Report</span> /* Render a non-clickable span if condition is not met */
+            ) : (
+              <Link
+                className={location.pathname === "/excess-report" ? "active" : ""}
+                to={{
+                  pathname: "/excess-report",
+                  search: `?start=${excessStart}`,
+                }}
+              >
+                Excess Report
+              </Link>
+            )}
+          </button>
         </div>
         
-        <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}> 
-          <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report</Link>
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
+          title="Display the list of inventory items whose current inventory is less than the inventory item's minimum amount to have around before needing to restock."> 
+          <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report"></Link>
+          <span>Restock Report</span>
         </button>
         {/* <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button> */}
       </div>
