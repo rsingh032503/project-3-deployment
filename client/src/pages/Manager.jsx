@@ -520,7 +520,8 @@ function Manager() {
             if (!salesStart || !salesEnd) {
               alert("Please enter both start and end dates before viewing the sales report.");
             }
-          }}>
+          }}
+          title = "Given a time window, display the sales by menu item from the order history.">
             {(!salesStart || !salesEnd) ? (
               <span>Sales Report</span> /* Render a non-clickable span if conditions are not met */
             ) : (
@@ -553,7 +554,8 @@ function Manager() {
             if (!excessStart) {
               alert("Please enter the start date before viewing the excess report.");
             }
-            }}>
+            }}
+            title = "Given a timestamp, display the list of inventory items that only sold less than 10% of their inventory between the timestamp and the current time, assuming no restocks have happened during the window.">
             {(!excessStart) ? (
               <span>Excess Report</span> /* Render a non-clickable span if condition is not met */
             ) : (
@@ -570,7 +572,8 @@ function Manager() {
           </button>
         </div>
         
-        <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}> 
+        <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
+          title="Display the list of inventory items whose current inventory is less than the inventory item's minimum amount to have around before needing to restock."> 
           <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report"></Link>
           <span>Restock Report</span>
         </button>
