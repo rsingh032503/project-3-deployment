@@ -496,7 +496,7 @@ function Manager() {
       </div>
       
       <h3>Reports</h3>
-      <div className="ContentContainer">
+      <div className="ContentContainer2">
         <div className="ButtonColumn">
 
           <div className="TextboxContainer">
@@ -574,11 +574,13 @@ function Manager() {
           </button>
         </div>
         
-        <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
-          title="Display the list of inventory items whose current inventory is less than the inventory item's minimum amount to have around before needing to restock."> 
-          <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report</Link>
-        </button>
-        {/* <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button> */}
+        <div className='ButtonColumn'>
+          <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
+            title="Display the list of inventory items whose current inventory is less than the inventory item's minimum amount to have around before needing to restock."> 
+            <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report</Link>
+          </button>
+        </div>
+        
       </div>
       
     </div>
