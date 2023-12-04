@@ -1,0 +1,64 @@
+/* Style for the cart container */
+.cart-container {
+    max-width: 600px; /* Adjust the maximum width as needed */
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for the cart table */
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  /* Style for table rows */
+  .cart-table tr {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Style for table data cells */
+  .cart-table td {
+    padding: 10px;
+    text-align: left;
+  }
+  
+  /* Style for the remove button */
+  .cart-table td button {
+    background-color: #ff5733; /* Adjust the color as needed */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  /* Style for the total row */
+  .cart-table tr.total-row td {
+    font-weight: bold;
+  }
+  
+  /* Additional styling for the h2 element */
+  .cart-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  /* Style for the Check Out button */
+  .checkout-button {
+    background-color: #4caf50; /* Adjust the color as needed */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-top: 15px;
+  }
+  
+  .checkout-button:hover {
+    background-color: #45a049; /* Adjust the hover color as needed */
+  }

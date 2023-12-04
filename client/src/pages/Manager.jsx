@@ -379,7 +379,8 @@ function Manager() {
 
   return (
     <div>
-      <h2>Manager</h2>
+      <h2 className='Title'>Manager View</h2>
+      <h3>Inventory</h3>
       <div className="ContentContainer">
         <table className="ingredientsTable">
           <thead>
@@ -438,6 +439,7 @@ function Manager() {
         </div>
       </div>
       
+      <h3>Menu</h3>
       <div className="ContentContainer">
         <div className="MenuItemsList">
           <label>Menu Items</label>
@@ -492,7 +494,8 @@ function Manager() {
           <button onClick={handleMenuItemDelete.bind(this, selectedMenuItemName)}>Delete Menu Item</button>
         </div>
       </div>
-
+      
+      <h3>Reports</h3>
       <div className="ContentContainer">
         <div className="ButtonColumn">
 
@@ -536,7 +539,6 @@ function Manager() {
               </Link>
             )}
           </button>
-
         </div>
         
         <div className='ButtonColumn'>
@@ -574,8 +576,7 @@ function Manager() {
         
         <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
           title="Display the list of inventory items whose current inventory is less than the inventory item's minimum amount to have around before needing to restock."> 
-          <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report"></Link>
-          <span>Restock Report</span>
+          <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report</Link>
         </button>
         {/* <button onClick={ e =>{ console.log("Restock Report Button clicked!"); window.open("http://localhost:5173/restock-report")}}>Restock Report</button> */}
       </div>

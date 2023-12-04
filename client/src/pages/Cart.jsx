@@ -105,7 +105,7 @@ function Cart() {
     })
       .then(response => response.json())
       .then(data => {
-        alert('Order submitted successfully');
+        alert('Order submitted successfully!');
         clearCart(); // Clear the order summary
         setCart([]);
         setQuantity([]);
@@ -141,26 +141,27 @@ function Cart() {
 
         return(
             <div>
-                <h2 style={{ fontSize: `${itemFontSize}px` }} data-translate>Items:</h2>
-                <table>
+               <div className="cart-container">
+                  <h2 className="cart-title" data-translate>Items:</h2>
+                  <table className="cart-table">
                     <tbody>
-                        {cart.map((item) => (
-                            <div>
-                                <tr key={item.id}>
-                                    <td  style={{ fontSize: `${fontSize}px` }} data-translate>{item.name}</td>
-                                    <td  style={{ fontSize: `${fontSize}px` }} >${item.price}</td>
-                                    <td style={{ fontSize: `${fontSize}px` }} >{"x" + quantity[cart.indexOf(item)]}</td>
-                                    <td><button onClick={ removeItem.bind(this,item)}>X</button></td>
-                                </tr>   
-                            </div>
-                        ))}
-                        <tr key="total">
-                            <td  style={{ fontSize: `${fontSize}px` }} data-translate>Total:</td>
-                            <td style={{ fontSize: `${fontSize}px` }} >${getTotal()}</td>
+                      {cart.map((item) => (
+                        <tr key={item.id}>
+                          <td>{item.name}</td>
+                          <td>${item.price}</td>
+                          <td>{"x" + quantity[cart.indexOf(item)]}</td>
+                          <td><button onClick={removeItem.bind(this, item)}>X</button></td>
                         </tr>
+                      ))}
+                      <tr className="total-row" key="total">
+                        <td data-translate>Total:</td>
+                        <td>${getTotal()}</td>
+                      </tr>
                     </tbody>
-                </table>
-                <button onClick={() => handleCheckout()} data-translate>Check Out</button>
+                  </table>
+
+                  <button className="checkout-button" onClick={() => handleCheckout()} data-translate>Check Out</button>
+                </div>
                 <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
 			    <button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
             </div>

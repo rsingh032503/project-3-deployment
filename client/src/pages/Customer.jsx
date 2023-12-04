@@ -142,7 +142,7 @@ function Customer() {
         <div>
             <h2 style={{ fontSize: `${customerViewFontSize}px` }} className='Title'data-translate>Customer View</h2>
             <h3 className='DrinkTitle'>
-                <p style={{ fontSize: `${drinkFontSize}px` }} data-translate>Drinks: </p>
+                <p style={{ fontSize: `${drinkFontSize}px` }} data-translate>Drinks</p>
                 <button className='toCart'>
                     <Link className='cartLink' to="/Cart" data-translate>{"Cart (" + getCartSize() + ")"}</Link>
                 </button>

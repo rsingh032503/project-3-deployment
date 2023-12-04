@@ -131,7 +131,10 @@ function Item() {
           <h1 data-translate>{item.name}</h1>
           <div className="column">
             <img src={images[item.name]} alt={item.name + " image"} />
-            <button onClick={addToCart.bind(this, item)} data-translate>Add To Cart</button>
+            <button onClick={() => {
+                addToCart(item);
+                window.alert(`${item.name} added to cart!`);
+            }} data-translate>Add To Cart</button>
           </div>
           <div className="column">
             <h3 style={{ fontSize: `${LabelfontSize}px` }} data-translate>Price: ${item.price}</h3>

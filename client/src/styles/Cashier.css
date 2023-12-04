@@ -39,3 +39,9 @@
 #cashierMenuItems {
   margin-bottom: 20px; /* Adjust the value as needed */
 }
+
+.Title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
