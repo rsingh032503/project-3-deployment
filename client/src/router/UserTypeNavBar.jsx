@@ -1,23 +1,27 @@
 import React,{useState, useEffect,setState} from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/UserTypeNavBar.css';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin, GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
 
-function UserTypeNavBar() {
+const UserTypeNavBar = () => {
     let location = useLocation();
     //console.log(location.pathname === "/");
 
-    let [user,changeUser] = useState(null);
-    let [loggedIn,changeLoginState] = useState(false);
+    const [user,changeUserState] = useState(undefined);
+    const [loggedIn,changeLoginState] = useState(false);
 
     const loginSucess = async (res) => {
-        let usertemp = jwtDecode(res.credential)
-        console.log(usertemp);
-        changeUser(user);
-        changeLoginState(true);
-        location.state = {};
+        //useEffect(() => {
+            let usertemp = jwtDecode(res.credential)
+            //console.log(usertemp);
+            console.log(user);
+            changeUserState(usertemp);
+            changeLoginState(true);
+            console.log(user);
+        //},[])
+        
     }
     
     const loginFailure = (error) => {
@@ -33,28 +37,8 @@ function UserTypeNavBar() {
             <Link className={((location.pathname === "/manager")? "active":"" )} to="/manager">Manager</Link>
             <GoogleOAuthProvider clientId='1041949387108-2g75rqvqqc2tt19pp2c884g7gqptgnpf.apps.googleusercontent.com'>
                 <GoogleLogin
-                    render={(renderProps) => {
-                        console.log(user);
-                        if(user == null){
-                            return(
-                                <button 
-                                    className='googleButton' 
-                                    onClick={renderProps.onClick()} 
-                                    disabled={renderProps.disabled}
-                                >
-                                    Login
-                                </button>
-                            );
-                        }
-                        else{
-                            return(
-                                <img src={user.picture}></img>
-                            );
-                        }
-                    }}
                     onSuccess={loginSucess}
-                    onFailure={loginFailure}
-                    cookiePolicy='single_host_policy'
+                    onError={loginFailure}
                 />
             </GoogleOAuthProvider>
         </div>
