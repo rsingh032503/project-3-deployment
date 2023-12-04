@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 
 const UserTypeNavBar = () => {
-    console.log(import.meta);
+    //console.log(import.meta);
     let location = useLocation();
     //console.log(location.pathname === "/");
 
@@ -30,24 +30,21 @@ const UserTypeNavBar = () => {
         console.log('Google Sign in was unsucessful');
     }
 
+    console.log(user);
+
     return (
-        <div className="navbar">
-            
-            
-            <GoogleOAuthProvider clientId={'1041949387108-2g75rqvqqc2tt19pp2c884g7gqptgnpf.apps.googleusercontent.com'}>
-                {user ? 
-                    (
-                        <div className='navbar'>
-                            <Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard</Link>
-                            <Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer</Link>
-                            <Link className={((location.pathname === "/cashier")? "active":"" )} to="/cashier">Cashier</Link>
-                            <Link className={((location.pathname === "/manager")? "active":"" )} to="/manager">Manager</Link>
-                            <img className='userPicture' src={user.picture}></img>
-                        </div>
-                        
-                    ) 
-                    
-                    :
+        <GoogleOAuthProvider clientId={'1041949387108-2g75rqvqqc2tt19pp2c884g7gqptgnpf.apps.googleusercontent.com'}>
+            {user ? 
+                (
+                    <div className='navbar'>
+                        <Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard</Link>
+                        <Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer</Link>
+                        <Link className={((location.pathname === "/cashier")? "active":"" )} to="/cashier">Cashier</Link>
+                        <Link className={((location.pathname === "/manager")? "active":"" )} to="/manager">Manager</Link>
+                        <img className='userPicture' src={user.picture}></img>
+                    </div>
+                ) 
+                :
                     <div className='navbar'>
                         <Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard</Link>
                         <Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer</Link>
@@ -56,9 +53,8 @@ const UserTypeNavBar = () => {
                         onError={loginFailure}
                         />
                     </div>
-                }
-            </GoogleOAuthProvider>
-        </div>
+            }
+        </GoogleOAuthProvider>
      );
 }
 
