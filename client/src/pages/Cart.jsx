@@ -105,7 +105,7 @@ function Cart() {
     })
       .then(response => response.json())
       .then(data => {
-        alert('Order submitted successfully');
+        alert('Order submitted successfully!');
         clearCart(); // Clear the order summary
         setCart([]);
         setQuantity([]);

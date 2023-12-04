@@ -108,7 +108,7 @@ function MenuBoard() {
 
   	return (
     	<>
-    	<h1 className="text-3xl font-bold underline" id="homepage" data-translate>
+    	<h1 className="Title" id="homepage" data-translate>
       		Welcome to Sharetea!
     	</h1>
       	{menuItemsData && (

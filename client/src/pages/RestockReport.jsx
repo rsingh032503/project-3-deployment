@@ -15,7 +15,7 @@ function RestockReport(){
     return(
         <div>
             <h2>Restock Report</h2>
-                <table className="restockTable">
+                <table className="reportTable">
                     <thead> 
                     <tr>
                         <th>Name</th>
