@@ -19,7 +19,7 @@ function SalesReport() {
   return (
     <div>
       <h2>Sales Report</h2>
-      <table className="salesTable">
+      <table className="reportTable">
         <thead>
           <tr>
             <th>Name</th>
