@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 
 const UserTypeNavBar = () => {
-    console.log(import.meta);
+    // console.log(import.meta);
     let location = useLocation();
     //console.log(location.pathname === "/");
 
@@ -29,7 +29,7 @@ const UserTypeNavBar = () => {
         console.log(error);
         console.log('Google Sign in was unsucessful');
     }
-
+    console.log(user);
     return (
         <div className="navbar">
             
