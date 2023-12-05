@@ -24,8 +24,9 @@ function Cashier() {
   function handleCheckout() {
     const name = prompt("Please enter the customer's name:");
     const email = prompt("Please enter the customer's email:");
-  
+    let notes = "";
     if (name && email) {
+      notes = prompt("Please enter any additional notes for the order (leave blank if none):");
       const customer = { name, email };
       submitOrder(orderSummary, customer);
     } else {
