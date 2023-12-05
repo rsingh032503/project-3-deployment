@@ -30,9 +30,11 @@ const UserTypeNavBar = () => {
             let userEmail = roles.find((i) => i.email == usertemp.email);
             if(userEmail == undefined){
                 setRole('customer');
+                console.debug('setting user to customer');
             }
             else{
                 setRole(userEmail.role);
+                console.debug('setting user to: ' + userEmail.role);
             }
             changeUserState(usertemp);
             changeLoginState(true);
@@ -81,6 +83,16 @@ const UserTypeNavBar = () => {
                 <button onClick={logout}>Logout</button>
             </div>
         );
+    }
+    else if (loggedIn){
+        return(
+            <div className='navbar'>
+                <Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard</Link>
+                <Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer</Link>
+                <img className='userPicture' src={user.picture}></img>
+                <button onClick={logout}>Logout</button>
+            </div>
+        )
     }
     else{
         return (
