@@ -23,3 +23,9 @@
 .active{
     background-color: #bbb;
 }
+
+.userPicture{
+    border-radius: 50%;
+    max-width: 40px;
+    height: auto;
+}

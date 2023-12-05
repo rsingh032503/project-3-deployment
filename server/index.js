@@ -98,6 +98,11 @@ app.get('/order_table', (req, res) => {
     getAllFromTable('order_table', res);
 });
 
+app.get('/login_info', (req, res) => {
+    getAllFromTable('login_info', res);
+});
+
+
 app.post('/menu_item', async (req, res) => {
     const name = req.body.name;
     const price = req.body.price;
