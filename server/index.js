@@ -444,3 +444,34 @@ app.get('/understocked', async (req, res) => {
     }
 });
 
+app.get('/recent-orders', async (req, res) => {
+    try {
+        // Query to retrieve the 10 most recent orders with customer information
+        const recentOrdersQuery = `
+            SELECT
+                ot.id,
+                c.name AS customer_name,
+                c.email AS customer_email,
+                ot.totalprice AS total_price,
+                ot.date_placed
+            FROM
+                order_table ot
+            JOIN
+                customer_order_join_table co ON ot.id = co.orderid
+            JOIN
+                customer c ON co.customerid = c.id
+            ORDER BY
+                ot.date_placed DESC
+            LIMIT 10
+        `;
+
+        const recentOrdersResult = await pool.query(recentOrdersQuery);
+        const recentOrders = recentOrdersResult.rows;
+
+        res.json({ recentOrders });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Error getting recent orders');
+    }
+});
+
