@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/item.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/item.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
 import '../styles/item.css';
 import { images } from '../images.js';
 import { Link, useLocation } from 'react-router-dom';
@@ -119,7 +147,7 @@ function Item() {
 
         const data = await response.json();
 
-        if (data && data.data && data.data.translations && data.data.translations[0]) {
+        if (data &amp;&amp; data.data &amp;&amp; data.data.translations &amp;&amp; data.data.translations[0]) {
           const translatedText = data.data.translations[0].translatedText;
           element.innerText = translatedText;
         }
@@ -158,19 +186,19 @@ function Item() {
    */
   if (loading || menuItems.length === 0 || ingredients.length === 0 || ingredient_item_join.length === 0) {
     return (
-      <div>
-        <p>Loading...</p>
-      </div>
+      &lt;div>
+        &lt;p>Loading...&lt;/p>
+      &lt;/div>
     );
   } else {
     let item = location.state;
 
     if (!item) {
       return (
-        <div>
-          <p>There is no menu item selected. Please select one from the customer page</p>
-          <Link to="/customer">Customer Page</Link>
-        </div>
+        &lt;div>
+          &lt;p>There is no menu item selected. Please select one from the customer page&lt;/p>
+          &lt;Link to="/customer">Customer Page&lt;/Link>
+        &lt;/div>
       );
     } else {
       let ingredient_ids = item.ingredients;
@@ -190,7 +218,7 @@ function Item() {
 
       for (let join of ingredient_item_join) {
         if (join.ingredient_id in ingredient_ids) {
-          for (let i = 0; i < current_item_ingredients.length; i++) {
+          for (let i = 0; i &lt; current_item_ingredients.length; i++) {
             if (current_item_ingredients[i].id === join.ingredient_id) {
               current_item_ingredients[i].quantity = join.quantity;
             }
@@ -199,41 +227,64 @@ function Item() {
       }
 
       return (
-        <div>
-          <h1 data-translate>{item.name}</h1>
-          <div className="column">
-            <img src={images[item.name]} alt={item.name + " image"} />
-            <button onClick={() => {
+        &lt;div>
+          &lt;h1 data-translate>{item.name}&lt;/h1>
+          &lt;div className="column">
+            &lt;img src={images[item.name]} alt={item.name + " image"} />
+            &lt;button onClick={() => {
                 addToCart(item);
                 window.alert(`${item.name} added to cart!`);
-            }} data-translate>Add To Cart</button>
-          </div>
-          <div className="column">
-            <h3 style={{ fontSize: `${LabelfontSize}px` }} data-translate>Price: ${item.price}</h3>
-            <h3 style={{ fontSize: `${LabelfontSize}px` }} data-translate>Ingredients</h3>
-            <table>
-              <thead>
-                <tr>
-                  <td style={{ fontSize: `${fontSize}px` }} data-translate>{'Ingredient'}</td>
-                  <td style={{ fontSize: `${fontSize}px` }} data-translate>{'Quantity'}</td>
-                </tr>
-              </thead>
+            }} data-translate>Add To Cart&lt;/button>
+          &lt;/div>
+          &lt;div className="column">
+            &lt;h3 style={{ fontSize: `${LabelfontSize}px` }} data-translate>Price: ${item.price}&lt;/h3>
+            &lt;h3 style={{ fontSize: `${LabelfontSize}px` }} data-translate>Ingredients&lt;/h3>
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;td style={{ fontSize: `${fontSize}px` }} data-translate>{'Ingredient'}&lt;/td>
+                  &lt;td style={{ fontSize: `${fontSize}px` }} data-translate>{'Quantity'}&lt;/td>
+                &lt;/tr>
+              &lt;/thead>
 
-              <tbody>
+              &lt;tbody>
                 {current_item_ingredients.map((ingredient) => (
-                  <tr key={ingredient.id}>
-                    <td style={{ fontSize: `${fontSize}px` }} data-translate>{ingredient.name}</td>
-                    <td style={{ fontSize: `${fontSize}px` }}>{ingredient.quantity}</td>
-                  </tr>
+                  &lt;tr key={ingredient.id}>
+                    &lt;td style={{ fontSize: `${fontSize}px` }} data-translate>{ingredient.name}&lt;/td>
+                    &lt;td style={{ fontSize: `${fontSize}px` }}>{ingredient.quantity}&lt;/td>
+                  &lt;/tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-          <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
-		<button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
-        </div>
+              &lt;/tbody>
+            &lt;/table>
+          &lt;/div>
+          &lt;FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+		&lt;button onClick={handleFontSizeDecrease}>Decrease Font Size&lt;/button>
+        &lt;/div>
       );
     }
   }
 }
 export default Item;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-BeverageImages.html">BeverageImages</a></li><li><a href="module-CartFunctions.html">CartFunctions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#ExcessReport">ExcessReport</a></li><li><a href="global.html#FontSizeIncreaser">FontSizeIncreaser</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#LanguageContext">LanguageContext</a></li><li><a href="global.html#LanguageProvider">LanguageProvider</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#MenuBoard">MenuBoard</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#UserTypeNavBar">UserTypeNavBar</a></li><li><a href="global.html#renderApp">renderApp</a></li><li><a href="global.html#useLanguage">useLanguage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05 2023 22:52:58 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

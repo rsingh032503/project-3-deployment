@@ -1,4 +1,32 @@
-import { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/MenuBoard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/MenuBoard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from 'react';
 // import reactLogo from './assets/react.svg';
 // import viteLogo from '/vite.svg';
 import { images } from '../images.js'; // path to the images.js file
@@ -56,7 +84,7 @@ function MenuBoard() {
         	const API_KEY = 'c07de4218ecd476595111859231611';
         	const LOCATION = 'College Station';
         	try {
-          	const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${LOCATION}&days=3`);
+          	const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&amp;q=${LOCATION}&amp;days=3`);
           	if (!response.ok) {
          		throw new Error('Network response was not ok');
           	}
@@ -101,7 +129,7 @@ function MenuBoard() {
 	
 			const data = await response.json();
 	
-			if (data && data.data && data.data.translations && data.data.translations[0]) {
+			if (data &amp;&amp; data.data &amp;&amp; data.data.translations &amp;&amp; data.data.translations[0]) {
 			  const translatedText = data.data.translations[0].translatedText;
 			  element.innerText = translatedText;
 			}
@@ -140,43 +168,66 @@ function MenuBoard() {
 	
 
   	return (
-    	<>
-    	<h1 className="Title" id="homepage" data-translate>
+    	&lt;>
+    	&lt;h1 className="Title" id="homepage" data-translate>
       		Welcome to Sharetea!
-    	</h1>
-      	{menuItemsData && (
-        	<div className="menu-items-container">
+    	&lt;/h1>
+      	{menuItemsData &amp;&amp; (
+        	&lt;div className="menu-items-container">
             	{menuItemsData.menu_item.map(item => (
-                	<div key={item.id} className="menu-item">
-                    	<img src={images[item.name]} alt={item.name} />
-                    	<p style={{ fontSize: `${fontSize}px` }} data-translate>{item.name}</p>
-                	</div>
+                	&lt;div key={item.id} className="menu-item">
+                    	&lt;img src={images[item.name]} alt={item.name} />
+                    	&lt;p style={{ fontSize: `${fontSize}px` }} data-translate>{item.name}&lt;/p>
+                	&lt;/div>
             	))}
-        	</div>
+        	&lt;/div>
       	)}
-		{weatherData && (
-		<div className="weather-container">
-			<h2 style={{ fontSize: `${weatherTitleFontSize}px` }} data-translate>Weather in {weatherData.location.name}</h2>
-			<h3 style={{ fontSize: `${weatherTitleFontSize}px` }} data-translate>Current temperature: {weatherData.current.temp_f}°F</h3>
-			<h3  style={{ fontSize: `${forecastTitleFontSize}px` }} data-translate>Forecast:</h3>
-			<div className="forecast-container">
+		{weatherData &amp;&amp; (
+		&lt;div className="weather-container">
+			&lt;h2 style={{ fontSize: `${weatherTitleFontSize}px` }} data-translate>Weather in {weatherData.location.name}&lt;/h2>
+			&lt;h3 style={{ fontSize: `${weatherTitleFontSize}px` }} data-translate>Current temperature: {weatherData.current.temp_f}°F&lt;/h3>
+			&lt;h3  style={{ fontSize: `${forecastTitleFontSize}px` }} data-translate>Forecast:&lt;/h3>
+			&lt;div className="forecast-container">
 			{weatherData.forecast.forecastday.map((day) => (
-				<div key={day.date} className="forecast-day">
-				<h4 style={{ fontSize: `${fontSize}px` }} >{day.date}</h4>
-				<img src={day.day.condition.icon} alt={day.day.condition.text} />
-				<p style={{ fontSize: `${fontSize}px` }} data-translate>{day.day.condition.text}</p>
-				<p style={{ fontSize: `${fontSize}px` }} data-translate >Max temp: {day.day.maxtemp_f}°F</p>
-				<p style={{ fontSize: `${fontSize}px` }} data-translate>Min temp: {day.day.mintemp_f}°F</p>
-				<p style={{ fontSize: `${fontSize}px` }} data-translate>Chance of rain: {day.day.daily_chance_of_rain}%</p>
-				</div>
+				&lt;div key={day.date} className="forecast-day">
+				&lt;h4 style={{ fontSize: `${fontSize}px` }} >{day.date}&lt;/h4>
+				&lt;img src={day.day.condition.icon} alt={day.day.condition.text} />
+				&lt;p style={{ fontSize: `${fontSize}px` }} data-translate>{day.day.condition.text}&lt;/p>
+				&lt;p style={{ fontSize: `${fontSize}px` }} data-translate >Max temp: {day.day.maxtemp_f}°F&lt;/p>
+				&lt;p style={{ fontSize: `${fontSize}px` }} data-translate>Min temp: {day.day.mintemp_f}°F&lt;/p>
+				&lt;p style={{ fontSize: `${fontSize}px` }} data-translate>Chance of rain: {day.day.daily_chance_of_rain}%&lt;/p>
+				&lt;/div>
 			))}
-			</div>
-			<FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
-			<button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
-		</div>
+			&lt;/div>
+			&lt;FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+			&lt;button onClick={handleFontSizeDecrease}>Decrease Font Size&lt;/button>
+		&lt;/div>
 		)}     
-    	</>
+    	&lt;/>
   	);
 }
 
 export default MenuBoard;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-BeverageImages.html">BeverageImages</a></li><li><a href="module-CartFunctions.html">CartFunctions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#ExcessReport">ExcessReport</a></li><li><a href="global.html#FontSizeIncreaser">FontSizeIncreaser</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#LanguageContext">LanguageContext</a></li><li><a href="global.html#LanguageProvider">LanguageProvider</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#MenuBoard">MenuBoard</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#UserTypeNavBar">UserTypeNavBar</a></li><li><a href="global.html#renderApp">renderApp</a></li><li><a href="global.html#useLanguage">useLanguage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05 2023 22:52:58 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

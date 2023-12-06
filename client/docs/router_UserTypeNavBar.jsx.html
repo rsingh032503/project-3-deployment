@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: router/UserTypeNavBar.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: router/UserTypeNavBar.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React,{useState, useEffect,setState} from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import '../styles/UserTypeNavBar.css';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+
+/**
+ * UserTypeNavBar component for displaying navigation based on user type.
+ *
+ * @component
+ * @returns {JSX.Element} The UserTypeNavBar component.
+ */
+const UserTypeNavBar = () => {
+    // console.log(import.meta);
+    let location = useLocation();
+    //console.log(location.pathname === "/");
+
+    const [user,changeUserState] = useState(null);
+    const [loggedIn,changeLoginState] = useState(false);
+    const [roles, changeRoleState] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [role, setRole] = useState('customer')
+
+     /**
+     * Fetches user roles from the server.
+     *
+     * @function
+     * @async
+     * @returns {void}
+     */
+    useEffect(() => {
+        fetch('http://localhost:3000/login_info')
+          .then(response => response.json())
+          .then(data => changeRoleState(data.login_info))
+          .then(() => setLoading(false))
+          .catch(error => console.error('Error:', error));
+      }, []);
+
+    /**
+     * Handles successful login by decoding user information from JWT.
+     *
+     * @function
+     * @param {Object} res - The response object containing the user credential.
+     * @returns {void}
+     */
+    const loginSucess = async (res) => {
+        //useEffect(() => {
+            let usertemp = jwtDecode(res.credential)
+            let userEmail = roles.find((i) => i.email == usertemp.email);
+            if(userEmail == undefined){
+                setRole('customer');
+                console.debug('setting user to customer');
+            }
+            else{
+                setRole(userEmail.role);
+                console.debug('setting user to: ' + userEmail.role);
+            }
+            changeUserState(usertemp);
+            changeLoginState(true);
+            
+        //},[])
+        
+    }
+    
+     /**
+     * Handles login failure.
+     *
+     * @function
+     * @param {Object} error - The error object.
+     * @returns {void}
+     */
+    const loginFailure = (error) => {
+        console.log(error);
+        console.log('Google Sign in was unsucessful');
+    }
+
+    /**
+     * Logs out the user.
+     *
+     * @function
+     * @returns {void}
+     */
+    const logout = () => {
+        changeUserState(null);
+        changeLoginState(false);
+        setRole('customer');
+    }
+
+    if(loading){
+        return (
+            &lt;p>Loading...&lt;/p>
+        )
+    }
+
+    console.log(user);
+    if(loggedIn &amp;&amp; role == 'manager'){ 
+        return (
+            &lt;div className='navbar'>
+                &lt;Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard&lt;/Link>
+                &lt;Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer&lt;/Link>
+                &lt;Link className={((location.pathname === "/cashier")? "active":"" )} to="/cashier">Cashier&lt;/Link>
+                &lt;Link className={((location.pathname === "/manager")? "active":"" )} to="/manager">Manager&lt;/Link>
+                &lt;img className='userPicture' src={user.picture}>&lt;/img>
+                &lt;button onClick={logout}>Logout&lt;/button>
+            &lt;/div>
+        );
+    }
+    else if(loggedIn &amp;&amp; role == 'cashier'){ 
+        return (
+            &lt;div className='navbar'>
+                &lt;Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard&lt;/Link>
+                &lt;Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer&lt;/Link>
+                &lt;Link className={((location.pathname === "/cashier")? "active":"" )} to="/cashier">Cashier&lt;/Link>
+                &lt;img className='userPicture' src={user.picture}>&lt;/img>
+                &lt;button onClick={logout}>Logout&lt;/button>
+            &lt;/div>
+        );
+    }
+    else if (loggedIn){
+        return(
+            &lt;div className='navbar'>
+                &lt;Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard&lt;/Link>
+                &lt;Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer&lt;/Link>
+                &lt;img className='userPicture' src={user.picture}>&lt;/img>
+                &lt;button onClick={logout}>Logout&lt;/button>
+            &lt;/div>
+        )
+    }
+    else{
+        return (
+            &lt;div className='navbar'>
+                &lt;Link className={((location.pathname === "/")? "active":"" )} to="/">MenuBoard&lt;/Link>
+                &lt;Link className={((location.pathname === "/customer")? "active":"" )} to="/customer">Customer&lt;/Link>
+                &lt;GoogleLogin
+                onSuccess={loginSucess}
+                onError={loginFailure}
+                />
+            &lt;/div>
+        );
+    }
+}
+
+export default UserTypeNavBar;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-BeverageImages.html">BeverageImages</a></li><li><a href="module-CartFunctions.html">CartFunctions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#ExcessReport">ExcessReport</a></li><li><a href="global.html#FontSizeIncreaser">FontSizeIncreaser</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#LanguageContext">LanguageContext</a></li><li><a href="global.html#LanguageProvider">LanguageProvider</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#MenuBoard">MenuBoard</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#UserTypeNavBar">UserTypeNavBar</a></li><li><a href="global.html#renderApp">renderApp</a></li><li><a href="global.html#useLanguage">useLanguage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05 2023 22:52:58 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

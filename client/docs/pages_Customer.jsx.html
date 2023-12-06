@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Customer.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Customer.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
 import '../styles/Customer.css';
 import { images } from '../images.js';
 import { Link } from 'react-router-dom';
@@ -80,7 +108,7 @@ function Customer() {
             setMenuItems(data.menu_item);
             
             // If the language is 'es' and translation hasn't occurred, translate the page
-            if (savedLanguage === 'es' && !translated) {
+            if (savedLanguage === 'es' &amp;&amp; !translated) {
                 translatePage();
                 setTranslated(true);
             }
@@ -106,7 +134,7 @@ function Customer() {
         localStorage.setItem('language', language);
       
         // Call the translation function when the language changes and the page is translated
-        if (language === 'es' && translated) {
+        if (language === 'es' &amp;&amp; translated) {
           translatePage();
         }
       }, [language, translated]);
@@ -131,7 +159,7 @@ function Customer() {
         let ingredients = "";
         let item_ingredients = menu_ingredient_join.filter( (join) => (join.menu_item_id == (item_id + 1)));
         //console.log(item_ingredients);
-        for(let i = 0; i < item_ingredients.length; i++){
+        for(let i = 0; i &lt; item_ingredients.length; i++){
             let join = item_ingredients[i];
             //console.log(join);
             //console.log(join.ingredient_id);
@@ -180,7 +208,7 @@ function Customer() {
         
               const data = await response.json();
         
-              if (data && data.data && data.data.translations && data.data.translations[0]) {
+              if (data &amp;&amp; data.data &amp;&amp; data.data.translations &amp;&amp; data.data.translations[0]) {
                 const translatedText = data.data.translations[0].translatedText;
                 element.innerText = translatedText;
               }
@@ -234,32 +262,54 @@ function Customer() {
    * @returns {JSX.Element} JSX representation of the Customer component.
    */
     return (
-        <div>
-            <h2 style={{ fontSize: `${customerViewFontSize}px` }} className='Title'data-translate>Customer View</h2>
-            <h3 className='DrinkTitle'>
-                <p style={{ fontSize: `${drinkFontSize}px` }} data-translate>Drinks</p>
-                <button className='toCart'>
-                    <Link className='cartLink' to="/Cart" data-translate>{"Cart (" + getCartSize() + ")"}</Link>
-                </button>
-            </h3>
-            <div className="grid">
+        &lt;div>
+            &lt;h2 style={{ fontSize: `${customerViewFontSize}px` }} className='Title'data-translate>Customer View&lt;/h2>
+            &lt;h3 className='DrinkTitle'>
+                &lt;p style={{ fontSize: `${drinkFontSize}px` }} data-translate>Drinks&lt;/p>
+                &lt;button className='toCart'>
+                    &lt;Link className='cartLink' to="/Cart" data-translate>{"Cart (" + getCartSize() + ")"}&lt;/Link>
+                &lt;/button>
+            &lt;/h3>
+            &lt;div className="grid">
                 {menuItems.map((item,index) => (
-                    <Link className="itemLink" key={item.id} to="/item" state={item}>
-                        <button className="item">   
-                            <img src={images[item.name]} alt={item.name + " image"}/>
-                            <p style={{ fontSize: `${fontSize}px` }} data-translate>{item.name}</p>
-                            <p style={{ fontSize: `${fontSize}px` }} >${item.price}</p> 
-                        </button>
-                    </Link>
+                    &lt;Link className="itemLink" key={item.id} to="/item" state={item}>
+                        &lt;button className="item">   
+                            &lt;img src={images[item.name]} alt={item.name + " image"}/>
+                            &lt;p style={{ fontSize: `${fontSize}px` }} data-translate>{item.name}&lt;/p>
+                            &lt;p style={{ fontSize: `${fontSize}px` }} >${item.price}&lt;/p> 
+                        &lt;/button>
+                    &lt;/Link>
                 ))}
-            </div>
-            <button onClick={handleLanguageChange}>
+            &lt;/div>
+            &lt;button onClick={handleLanguageChange}>
                 {language === 'es' ? 'English' : 'Español'}
-            </button>
-            <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
-			<button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
-        </div>
+            &lt;/button>
+            &lt;FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+			&lt;button onClick={handleFontSizeDecrease}>Decrease Font Size&lt;/button>
+        &lt;/div>
     );
 }
 
-export default Customer;
+export default Customer;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-BeverageImages.html">BeverageImages</a></li><li><a href="module-CartFunctions.html">CartFunctions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#ExcessReport">ExcessReport</a></li><li><a href="global.html#FontSizeIncreaser">FontSizeIncreaser</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#LanguageContext">LanguageContext</a></li><li><a href="global.html#LanguageProvider">LanguageProvider</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#MenuBoard">MenuBoard</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#UserTypeNavBar">UserTypeNavBar</a></li><li><a href="global.html#renderApp">renderApp</a></li><li><a href="global.html#useLanguage">useLanguage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05 2023 22:52:58 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

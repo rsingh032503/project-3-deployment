@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Manager.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Manager.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/Manager.css';
 
@@ -68,19 +96,19 @@ function Manager() {
   }, []);
 
   // Populate arrays with IDs on component mount
-  for(let i = 0; i < ingredients.length; i++){
+  for(let i = 0; i &lt; ingredients.length; i++){
     ingredientIDs.push(ingredients[i].id);
   }
 
-  for(let i = 0; i < menuItems.length; i++){
+  for(let i = 0; i &lt; menuItems.length; i++){
     menuItemIDs.push(menuItems[i].id);
   }
 
-  for(let i = 0; i < joinTable.length; i++) {
+  for(let i = 0; i &lt; joinTable.length; i++) {
     joinIDs.push(joinTable[i].join_id);
   }
 
-  for(let i = 0; i < loginInfo.length; i++){
+  for(let i = 0; i &lt; loginInfo.length; i++){
     emailIDs.push(loginInfo[i].id);
   }
 
@@ -116,13 +144,13 @@ function Manager() {
  * Handles the addition of a new menu item.
  *
  * @param {string} name - The name of the menu item.
- * @param {Array<string>} usedIngredients - The list of ingredient names used in the menu item.
+ * @param {Array&lt;string>} usedIngredients - The list of ingredient names used in the menu item.
  * @param {number} price - The price of the menu item.
  */
   function handleMenuItemAdd(name, usedIngredients, price) {
     try {
         // Input validation
-        if (price < 0 || !Number.isFinite(parseFloat(price))) {
+        if (price &lt; 0 || !Number.isFinite(parseFloat(price))) {
             console.log("Invalid inputs");
             return;
         }
@@ -195,8 +223,8 @@ function Manager() {
  * Adds ingredients to the join table for a given menu item.
  *
  * @param {number} menuItemId - The ID of the menu item.
- * @param {Array<string>} usedIngredients - The list of ingredient names used in the menu item.
- * @returns {Promise<Array>} - A promise that resolves when all fetch operations are complete.
+ * @param {Array&lt;string>} usedIngredients - The list of ingredient names used in the menu item.
+ * @returns {Promise&lt;Array>} - A promise that resolves when all fetch operations are complete.
  */
   function addItemIngredients(menuItemId, usedIngredients) {
     // Create an array to hold all the promises
@@ -267,13 +295,13 @@ function Manager() {
  * Handles the update of a menu item.
  *
  * @param {string} name - The name of the menu item.
- * @param {Array<string>} usedIngredients - The list of ingredient names used in the menu item.
+ * @param {Array&lt;string>} usedIngredients - The list of ingredient names used in the menu item.
  * @param {number} price - The price of the menu item.
  */
   async function handleMenuItemUpdate(name, usedIngredients, price) {
     try {
       // Input validation
-      if (price < 0 || !Number.isFinite(parseFloat(price))) {
+      if (price &lt; 0 || !Number.isFinite(parseFloat(price))) {
           console.log("Invalid inputs");
           return;
       }
@@ -360,7 +388,7 @@ function Manager() {
   function handleIngredientItemAdd(name, price, quantity) {
     try{
       //Input validation
-      if(price < 0 || quantity < 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
+      if(price &lt; 0 || quantity &lt; 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
         console.log(typeof quantity);
         console.log("Invalid inputs");
         return;
@@ -427,7 +455,7 @@ function Manager() {
     try{
     
       //Input validation
-      if(price < 0 || quantity < 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
+      if(price &lt; 0 || quantity &lt; 0 || !Number.isInteger(parseInt(quantity)) || !Number.isFinite(parseFloat(price))){
         console.log(typeof quantity);
         console.log("Invalid inputs");
         return;
@@ -575,271 +603,271 @@ function Manager() {
 
   // ... (Other functions for handling menu items and generating reports)
   return (
-    <div>
-      <h2 className='Title'>Manager View</h2>
-      <h3>Inventory</h3>
-      <div className="ContentContainer">
-        <table className="ingredientsTable">
-          <thead>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-          </thead>
-          <tbody>
+    &lt;div>
+      &lt;h2 className='Title'>Manager View&lt;/h2>
+      &lt;h3>Inventory&lt;/h3>
+      &lt;div className="ContentContainer">
+        &lt;table className="ingredientsTable">
+          &lt;thead>
+            &lt;th>Name&lt;/th>
+            &lt;th>Price&lt;/th>
+            &lt;th>Quantity&lt;/th>
+          &lt;/thead>
+          &lt;tbody>
             {ingredients.map((ingredient) => (
-              <tr key={ingredient.id}>
-                <td>{ingredient.name}</td>
-                <td>${ingredient.restock_price.toFixed(2)}</td>
-                <td>{ingredient.quantity}</td>
-              </tr>
+              &lt;tr key={ingredient.id}>
+                &lt;td>{ingredient.name}&lt;/td>
+                &lt;td>${ingredient.restock_price.toFixed(2)}&lt;/td>
+                &lt;td>{ingredient.quantity}&lt;/td>
+              &lt;/tr>
             ))}
-          </tbody>
-        </table>
+          &lt;/tbody>
+        &lt;/table>
 
-        <div className="ButtonColumn">
-          <button onClick={handleIngredientItemRestock.bind(this, selectedQuantity, selectedingredientName)}>Restock Ingredient</button>
-          <button onClick={handleIngredientItemAdd.bind(this, selectedingredientName, selectedPrice, selectedQuantity)}>Add Ingredient</button>
-          <button onClick={handleIngredientItemUpdate.bind(this, selectedPrice, selectedQuantity, selectedingredientName)}>Update Ingredient</button>
-          <button onClick={handleIngredientItemDelete.bind(this, selectedingredientName)}>Delete Ingredient</button>
-          <button onClick={handleUserAdd.bind(this, selectedEmail, selectedRole)}>Add User</button>
-          <button onClick={handleUserUpdate.bind(this, selectedEmail, selectedRole)}>Update User</button>
-          <button onClick={handleUserDelete.bind(this, selectedEmail)}>Delete User</button>
-        </div>
+        &lt;div className="ButtonColumn">
+          &lt;button onClick={handleIngredientItemRestock.bind(this, selectedQuantity, selectedingredientName)}>Restock Ingredient&lt;/button>
+          &lt;button onClick={handleIngredientItemAdd.bind(this, selectedingredientName, selectedPrice, selectedQuantity)}>Add Ingredient&lt;/button>
+          &lt;button onClick={handleIngredientItemUpdate.bind(this, selectedPrice, selectedQuantity, selectedingredientName)}>Update Ingredient&lt;/button>
+          &lt;button onClick={handleIngredientItemDelete.bind(this, selectedingredientName)}>Delete Ingredient&lt;/button>
+          &lt;button onClick={handleUserAdd.bind(this, selectedEmail, selectedRole)}>Add User&lt;/button>
+          &lt;button onClick={handleUserUpdate.bind(this, selectedEmail, selectedRole)}>Update User&lt;/button>
+          &lt;button onClick={handleUserDelete.bind(this, selectedEmail)}>Delete User&lt;/button>
+        &lt;/div>
 
-        <div className="ingredientColumn">
-            <div className="TextboxContainer">
-              <label className="TextboxLabel" htmlFor="ingredientNameTextbox">Ingredient Name</label>
-              <input
+        &lt;div className="ingredientColumn">
+            &lt;div className="TextboxContainer">
+              &lt;label className="TextboxLabel" htmlFor="ingredientNameTextbox">Ingredient Name&lt;/label>
+              &lt;input
                 id="ingredientNameTextbox"
                 type="text"
                 value={selectedingredientName}
                 onChange={e => setSelectedIngredientName(e.target.value)}
               />
-            </div>
+            &lt;/div>
 
-          <div className="TextboxContainer">
-            <label className="TextboxLabel" htmlFor="PriceTextbox">Price</label>
-            <input
+          &lt;div className="TextboxContainer">
+            &lt;label className="TextboxLabel" htmlFor="PriceTextbox">Price&lt;/label>
+            &lt;input
               id="PriceTextbox"
               type="text"
               value={selectedPrice}
               onChange={e => setSelectedPrice(e.target.value)}
             />
-          </div>
+          &lt;/div>
 
-          <div className="TextboxContainer">
-            <label className="TextboxLabel" htmlFor="QuantityTextboxes">Quantity</label>
-            <input
+          &lt;div className="TextboxContainer">
+            &lt;label className="TextboxLabel" htmlFor="QuantityTextboxes">Quantity&lt;/label>
+            &lt;input
               id="QuantityTextbox"
               type="text"
               value={selectedQuantity}
               onChange={e => setSelectedQuantity(e.target.value)}
             />
-          </div>
+          &lt;/div>
 
-          <div className="TextboxContainer">
-            <label className="TextboxLabel" htmlFor="RoleTextboxes">Email</label>
-            <input
+          &lt;div className="TextboxContainer">
+            &lt;label className="TextboxLabel" htmlFor="RoleTextboxes">Email&lt;/label>
+            &lt;input
               id="RoleTextbox"
               type="text"
               value={selectedEmail}
               onChange={e => setSelectedEmail(e.target.value)}
             />
-          </div>
+          &lt;/div>
 
-          <div className="TextboxContainer">
-            <label className="TextboxLabel" htmlFor="RoleTextboxes">Role</label>
-            <input
+          &lt;div className="TextboxContainer">
+            &lt;label className="TextboxLabel" htmlFor="RoleTextboxes">Role&lt;/label>
+            &lt;input
               id="RoleTextbox"
               type="text"
               value={selectedRole}
               onChange={e => setSelectedRole(e.target.value)}
             />
-          </div>
-        </div>
-      </div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
       
-      <h3>Menu</h3>
-      <div className="ContentContainer">
-        <div className="MenuItemsList">
-          <label>Menu Items</label>
-          <ul>
+      &lt;h3>Menu&lt;/h3>
+      &lt;div className="ContentContainer">
+        &lt;div className="MenuItemsList">
+          &lt;label>Menu Items&lt;/label>
+          &lt;ul>
             {menuItems.map((item) => (
-              <li key={item.id} onClick={() => handleMenuItemClick(item)} className={selectedItem === item ? 'selected' : ''}
-              >{item.name}</li>
+              &lt;li key={item.id} onClick={() => handleMenuItemClick(item)} className={selectedItem === item ? 'selected' : ''}
+              >{item.name}&lt;/li>
             ))}
-          </ul>
-        </div>
+          &lt;/ul>
+        &lt;/div>
         
-        <div className="TextboxContainer">
-          <label className="TextboxLabel">Name</label>
-          <input
+        &lt;div className="TextboxContainer">
+          &lt;label className="TextboxLabel">Name&lt;/label>
+          &lt;input
             id="menuItemTextbox"
             type="text"
             value={selectedMenuItemName}
             onChange={e => setSelectedMenuItemName(e.target.value)}
           />
-        </div>
+        &lt;/div>
 
-        <div className="CheckboxListContainer">
-          <label>Ingredients</label>
-          <div className="CheckboxList">
+        &lt;div className="CheckboxListContainer">
+          &lt;label>Ingredients&lt;/label>
+          &lt;div className="CheckboxList">
             {ingredients.map((ingredient) => (
-              <label key={ingredient.id} className="CheckboxLabel">
-                <input
+              &lt;label key={ingredient.id} className="CheckboxLabel">
+                &lt;input
                   type="checkbox"
                   value={ingredient.name}
                   checked={selectedMenuItemIngredients.includes(ingredient.name)}
                   onChange={handleCheckboxChange}
                 />
                 {ingredient.name}
-              </label>
+              &lt;/label>
             ))}
-          </div>
-        </div>
+          &lt;/div>
+        &lt;/div>
 
-        <div className="TextboxContainer">
-          <label className="TextboxLabel">Price</label>
-          <input
+        &lt;div className="TextboxContainer">
+          &lt;label className="TextboxLabel">Price&lt;/label>
+          &lt;input
             id="menuItemPriceTextbox"
             type="text"
             value={selectedMenuItemPrice}
             onChange={e => setSelectedMenuItemPrice(e.target.value)}
           />
-        </div>
+        &lt;/div>
 
-        <div className="ButtonColumn">
-          <button onClick={handleMenuItemAdd.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Add Menu Item</button>
-          <button onClick={handleMenuItemUpdate.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Update Menu Item</button>
-          <button onClick={handleMenuItemDelete.bind(this, selectedMenuItemName)}>Delete Menu Item</button>
-        </div>
-      </div>
+        &lt;div className="ButtonColumn">
+          &lt;button onClick={handleMenuItemAdd.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Add Menu Item&lt;/button>
+          &lt;button onClick={handleMenuItemUpdate.bind(this, selectedMenuItemName, selectedMenuItemIngredients, selectedMenuItemPrice)}>Update Menu Item&lt;/button>
+          &lt;button onClick={handleMenuItemDelete.bind(this, selectedMenuItemName)}>Delete Menu Item&lt;/button>
+        &lt;/div>
+      &lt;/div>
       
-      <h3>Reports</h3>
-      <div className="ContentContainer2">
-        <table className="orderTable">
-            <thead>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Total Price</th>
-              <th>Date Placed</th>
-            </thead>
-            <tbody>
+      &lt;h3>Reports&lt;/h3>
+      &lt;div className="ContentContainer2">
+        &lt;table className="orderTable">
+            &lt;thead>
+              &lt;th>Name&lt;/th>
+              &lt;th>Email&lt;/th>
+              &lt;th>Total Price&lt;/th>
+              &lt;th>Date Placed&lt;/th>
+            &lt;/thead>
+            &lt;tbody>
               {orders.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.customer_name}</td>
-                  <td>{order.customer_email}</td>
-                  <td>${order.total_price}</td>
+                &lt;tr key={order.id}>
+                  &lt;td>{order.customer_name}&lt;/td>
+                  &lt;td>{order.customer_email}&lt;/td>
+                  &lt;td>${order.total_price}&lt;/td>
 
-                  <td>{new Date(order.date_placed).toLocaleString('en-US', { 
+                  &lt;td>{new Date(order.date_placed).toLocaleString('en-US', { 
                     year: 'numeric', 
                     month: 'numeric', 
                     day: 'numeric', 
                     hour: 'numeric', 
                     minute: 'numeric', 
                     hour12: true 
-                  })}</td>
+                  })}&lt;/td>
 
-                </tr>
+                &lt;/tr>
               ))}
-            </tbody>
-          </table>
-        <div>
-          <label>10 Most Recent Orders</label>
-          <table className="orderTable">
-              <thead>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Total Price</th>
-                <th>Date Placed</th>
-              </thead>
-              <tbody>
+            &lt;/tbody>
+          &lt;/table>
+        &lt;div>
+          &lt;label>10 Most Recent Orders&lt;/label>
+          &lt;table className="orderTable">
+              &lt;thead>
+                &lt;th>Name&lt;/th>
+                &lt;th>Email&lt;/th>
+                &lt;th>Total Price&lt;/th>
+                &lt;th>Date Placed&lt;/th>
+              &lt;/thead>
+              &lt;tbody>
                 {orders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.customer_name}</td>
-                    <td>{order.customer_email}</td>
-                    <td>${order.total_price}</td>
+                  &lt;tr key={order.id}>
+                    &lt;td>{order.customer_name}&lt;/td>
+                    &lt;td>{order.customer_email}&lt;/td>
+                    &lt;td>${order.total_price}&lt;/td>
 
-                    <td>{new Date(order.date_placed).toLocaleString('en-US', { 
+                    &lt;td>{new Date(order.date_placed).toLocaleString('en-US', { 
                       year: 'numeric', 
                       month: 'numeric', 
                       day: 'numeric', 
                       hour: 'numeric', 
                       minute: 'numeric', 
                       hour12: true 
-                    })}</td>
+                    })}&lt;/td>
 
-                  </tr>
+                  &lt;/tr>
                 ))}
-              </tbody>
-            </table>
-        </div>
+              &lt;/tbody>
+            &lt;/table>
+        &lt;/div>
         
 
-        <div className="ButtonColumn">
-          <div className="TextboxContainer">
-            <label className="TextboxLabel">Start Date</label>
-              <input
+        &lt;div className="ButtonColumn">
+          &lt;div className="TextboxContainer">
+            &lt;label className="TextboxLabel">Start Date&lt;/label>
+              &lt;input
                 id="salesStartTextbox"
                 type="text"
                 value={salesStart}
                 onChange={e => setSalesStart(e.target.value)}
               />
-          </div>
+          &lt;/div>
         
-          <div className='TextboxContainer'>
-            <label className="TextboxLabel">End Date</label>
-              <input
+          &lt;div className='TextboxContainer'>
+            &lt;label className="TextboxLabel">End Date&lt;/label>
+              &lt;input
                 id="salesEndTextbox"
                 type="text"
                 value={salesEnd}
                 onChange={e => setSalesEnd(e.target.value)}
               />
-          </div>
+          &lt;/div>
           
-          <button onClick={() => {
+          &lt;button onClick={() => {
             if (!salesStart || !salesEnd) {
               alert("Please enter both start and end dates before viewing the sales report.");
             }
           }}
           title = "Given a time window, display the sales by menu item from the order history.">
             {(!salesStart || !salesEnd) ? (
-              <span>Sales Report</span> /* Render a non-clickable span if conditions are not met */
+              &lt;span>Sales Report&lt;/span> /* Render a non-clickable span if conditions are not met */
             ) : (
-              <Link
+              &lt;Link
                 className={location.pathname === "/sales-report" ? "active" : ""}
                 to={{
                   pathname: "/sales-report",
-                  search: `?start=${salesStart}&end=${salesEnd}`,
+                  search: `?start=${salesStart}&amp;end=${salesEnd}`,
                 }}
               >
                 Sales Report
-              </Link>
+              &lt;/Link>
             )}
-          </button>
-        </div>
+          &lt;/button>
+        &lt;/div>
         
-        <div className='ButtonColumn'>
-          <div className='TextboxContainer'>
-            <label className="TextboxLabel">Start Date</label>
-            <input
+        &lt;div className='ButtonColumn'>
+          &lt;div className='TextboxContainer'>
+            &lt;label className="TextboxLabel">Start Date&lt;/label>
+            &lt;input
               id="excessTextbox"
               type="text"
               value={excessStart}
               onChange={e => setExcessStart(e.target.value)}
             />
-          </div>
+          &lt;/div>
           
-          <button onClick={() => {
+          &lt;button onClick={() => {
             if (!excessStart) {
               alert("Please enter the start date before viewing the excess report.");
             }
             }}
             title = "Given a timestamp, display the list of inventory items that only sold less than 10% of their inventory between the timestamp and the current time, assuming no restocks have happened during the window.">
             {(!excessStart) ? (
-              <span>Excess Report</span> /* Render a non-clickable span if condition is not met */
+              &lt;span>Excess Report&lt;/span> /* Render a non-clickable span if condition is not met */
             ) : (
-              <Link
+              &lt;Link
                 className={location.pathname === "/excess-report" ? "active" : ""}
                 to={{
                   pathname: "/excess-report",
@@ -847,22 +875,44 @@ function Manager() {
                 }}
               >
                 Excess Report
-              </Link>
+              &lt;/Link>
             )}
-          </button>
-        </div>
+          &lt;/button>
+        &lt;/div>
         
-        <div className='ButtonColumn'>
-          <button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
+        &lt;div className='ButtonColumn'>
+          &lt;button onClick={ e =>{ console.log("Restock Report Button clicked!");}}
             title="Display the list of inventory items whose current inventory is less than the inventory item's minimum amount to have around before needing to restock."> 
-            <Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report</Link>
-          </button>
-        </div>
+            &lt;Link className={((location.pathname === "/restock-report")? "active":"" )} to="/restock-report">Restock Report&lt;/Link>
+          &lt;/button>
+        &lt;/div>
         
-      </div>
+      &lt;/div>
       
-    </div>
+    &lt;/div>
   );
 }
 
-export default Manager;
+export default Manager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-BeverageImages.html">BeverageImages</a></li><li><a href="module-CartFunctions.html">CartFunctions</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#Cart">Cart</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#ExcessReport">ExcessReport</a></li><li><a href="global.html#FontSizeIncreaser">FontSizeIncreaser</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#LanguageContext">LanguageContext</a></li><li><a href="global.html#LanguageProvider">LanguageProvider</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#MenuBoard">MenuBoard</a></li><li><a href="global.html#RestockReport">RestockReport</a></li><li><a href="global.html#SalesReport">SalesReport</a></li><li><a href="global.html#UserTypeNavBar">UserTypeNavBar</a></li><li><a href="global.html#renderApp">renderApp</a></li><li><a href="global.html#useLanguage">useLanguage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05 2023 22:52:58 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

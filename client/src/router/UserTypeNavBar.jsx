@@ -4,7 +4,12 @@ import '../styles/UserTypeNavBar.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
-
+/**
+ * UserTypeNavBar component for displaying navigation based on user type.
+ *
+ * @component
+ * @returns {JSX.Element} The UserTypeNavBar component.
+ */
 const UserTypeNavBar = () => {
     // console.log(import.meta);
     let location = useLocation();
@@ -16,6 +21,13 @@ const UserTypeNavBar = () => {
     const [loading, setLoading] = useState(true);
     const [role, setRole] = useState('customer')
 
+     /**
+     * Fetches user roles from the server.
+     *
+     * @function
+     * @async
+     * @returns {void}
+     */
     useEffect(() => {
         fetch('http://localhost:3000/login_info')
           .then(response => response.json())
@@ -24,6 +36,13 @@ const UserTypeNavBar = () => {
           .catch(error => console.error('Error:', error));
       }, []);
 
+    /**
+     * Handles successful login by decoding user information from JWT.
+     *
+     * @function
+     * @param {Object} res - The response object containing the user credential.
+     * @returns {void}
+     */
     const loginSucess = async (res) => {
         //useEffect(() => {
             let usertemp = jwtDecode(res.credential)
@@ -43,11 +62,24 @@ const UserTypeNavBar = () => {
         
     }
     
+     /**
+     * Handles login failure.
+     *
+     * @function
+     * @param {Object} error - The error object.
+     * @returns {void}
+     */
     const loginFailure = (error) => {
         console.log(error);
         console.log('Google Sign in was unsucessful');
     }
 
+    /**
+     * Logs out the user.
+     *
+     * @function
+     * @returns {void}
+     */
     const logout = () => {
         changeUserState(null);
         changeLoginState(false);

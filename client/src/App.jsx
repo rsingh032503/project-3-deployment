@@ -11,7 +11,12 @@ import Cart from './pages/Cart.jsx';
 import SalesReport from './pages/SalesReport';
 import ExcessReport from './pages/ExcessReport';
 
-
+/**
+ * The main application component.
+ *
+ * @component
+ * @returns {React.ReactNode} The rendered application.
+ */
 function App() {
   return (
     <GoogleOAuthProvider clientId={'1041949387108-2g75rqvqqc2tt19pp2c884g7gqptgnpf.apps.googleusercontent.com'}>

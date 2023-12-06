@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Manager.css';
 
+/**
+ * RestockReport component displays a report of understocked ingredients.
+ *
+ * @component
+ * @returns {JSX.Element} The RestockReport component.
+ */
 function RestockReport(){
     const [understockedIngredients, setUnderstockedIngredients] = useState([]);
 
+    /**
+     * Fetches understocked ingredients from the server and updates state.
+     *
+     * @function
+     * @returns {void}
+     */
     useEffect(() => {
         //Fetch understocked ingredients and update state
         fetch('https://project-3-09m-server.onrender.com/understocked')
