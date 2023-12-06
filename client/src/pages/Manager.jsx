@@ -636,6 +636,37 @@ function Manager() {
               ))}
             </tbody>
           </table>
+        <div>
+          <label>10 Most Recent Orders</label>
+          <table className="orderTable">
+              <thead>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Total Price</th>
+                <th>Date Placed</th>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.customer_name}</td>
+                    <td>{order.customer_email}</td>
+                    <td>${order.total_price}</td>
+
+                    <td>{new Date(order.date_placed).toLocaleString('en-US', { 
+                      year: 'numeric', 
+                      month: 'numeric', 
+                      day: 'numeric', 
+                      hour: 'numeric', 
+                      minute: 'numeric', 
+                      hour12: true 
+                    })}</td>
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+        </div>
+        
 
         <div className="ButtonColumn">
           <div className="TextboxContainer">
