@@ -7,6 +7,7 @@ function Manager() {
   const [ingredients, setIngredients] = useState([]);
   const [joinTable, setJoinTable] = useState([]);
   const [loginInfo, setLoginInfos] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   const [selectedingredientName, setSelectedIngredientName] = useState('');
   const [selectedPrice, setSelectedPrice] = useState('');
@@ -49,6 +50,10 @@ function Manager() {
     .then(data => setLoginInfos(data.login_info))
     .catch(error => console.error('Error:', error));
 
+    fetch('https://project-3-09m-server.onrender.com/recent-orders')
+      .then(response => response.json())
+      .then(data => setOrders(data.recentOrders))
+      .catch(error => console.error('Error:', error));
   }, []);
 
   for(let i = 0; i < ingredients.length; i++){
@@ -604,8 +609,35 @@ function Manager() {
       
       <h3>Reports</h3>
       <div className="ContentContainer2">
-        <div className="ButtonColumn">
+        <table className="orderTable">
+            <thead>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Total Price</th>
+              <th>Date Placed</th>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order.id}>
+                  <td>{order.customer_name}</td>
+                  <td>{order.customer_email}</td>
+                  <td>${order.total_price}</td>
 
+                  <td>{new Date(order.date_placed).toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric', 
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    hour12: true 
+                  })}</td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+        <div className="ButtonColumn">
           <div className="TextboxContainer">
             <label className="TextboxLabel">Start Date</label>
               <input
