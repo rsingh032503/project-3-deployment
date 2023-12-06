@@ -98,6 +98,10 @@ app.get('/order_table', (req, res) => {
     getAllFromTable('order_table', res);
 });
 
+app.get('/login_info', (req, res) => {
+    getAllFromTable('login_info', res);
+});
+
 app.post('/menu_item', async (req, res) => {
     const name = req.body.name;
     const price = req.body.price;
@@ -439,3 +443,43 @@ app.get('/understocked', async (req, res) => {
     }
 });
 
+app.post('/login_info', async (req, res) => {
+
+    const id = req.body.id;
+    const email = req.body.email;
+    const role = req.body.role;
+
+    try {
+      const insertQuery = 'INSERT INTO login_info (id, email, role) OVERRIDING SYSTEM VALUE VALUES ($1, $2, $3)';
+      await pool.query(insertQuery, [id, email, role]);
+      res.json('User was added!');
+    } catch (err) {
+      console.error(err);
+      res.status(500).json('Error adding User');
+    }
+  });
+
+app.put('/login_info', async (req, res) => {
+try {
+    const email = req.body.email; 
+    const role  = req.body.role;
+
+    updateQuery = `UPDATE login_info SET role = '${role}' WHERE email = '${email}'`;
+
+    await pool.query(updateQuery);
+    res.json('User was udpated!');
+} catch (err) {
+    console.error(err);
+    res.status(500).json('Error updating user');
+}
+});
+
+app.delete("/login_info", async (req, res) =>{
+    try{
+        const {email} = req.body;
+        pool.query(`DELETE FROM login_info WHERE email = '${email}'`);
+        res.json("User was deleted!");
+    }catch(err){
+        console.log(err.message);
+    }
+});

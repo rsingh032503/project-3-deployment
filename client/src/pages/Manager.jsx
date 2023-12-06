@@ -6,11 +6,15 @@ function Manager() {
   const [menuItems, setMenuItems] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [joinTable, setJoinTable] = useState([]);
+  const [loginInfo, setLoginInfos] = useState([]);
 
   const [selectedingredientName, setSelectedIngredientName] = useState('');
   const [selectedPrice, setSelectedPrice] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
+  const [selectedEmail, setSelectedEmail] = useState('');
   const ingredientIDs = [];
+  const emailIDs = [];
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedMenuItemName, setSelectedMenuItemName] = useState('');
@@ -39,6 +43,12 @@ function Manager() {
       .then(response => response.json())
       .then(data => setJoinTable(data.ingredient_menu_item_join_table))
       .catch(error => console.error('Error:', error));
+
+    fetch('http://localhost:3000/login_info')
+    .then(response => response.json())
+    .then(data => setLoginInfos(data.login_info))
+    .catch(error => console.error('Error:', error));
+
   }, []);
 
   for(let i = 0; i < ingredients.length; i++){
@@ -50,7 +60,11 @@ function Manager() {
   }
 
   for(let i = 0; i < joinTable.length; i++) {
-    joinIDs.push(joinTable[i].join_id)
+    joinIDs.push(joinTable[i].join_id);
+  }
+
+  for(let i = 0; i < loginInfo.length; i++){
+    emailIDs.push(loginInfo[i].id);
   }
 
   //Refresh the ingredients table 
@@ -377,6 +391,76 @@ function Manager() {
     }
   }
 
+  function handleUserAdd(email, role) {
+    try{
+      //Generate a new id and table values for a new ingredient
+      const id = Math.max(...emailIDs) + 1;
+      emailIDs.push(id);
+      const body = JSON.stringify({id, email, role});
+
+      console.log(id);
+      console.log(email); 
+      console.log(role);
+      fetch('https://project-3-09m-server.onrender.com/login_info', {
+        method: "POST",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
+
+  function handleUserUpdate(email, role) {
+    try{
+
+      //Generate a new id and table values for a new ingredient
+      const body = JSON.stringify({email, role});
+
+      console.log(email);
+      console.log(role);
+      fetch('https://project-3-09m-server.onrender.com/login_info', {
+        method: "PUT",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
+
+  function handleUserDelete(email) {
+    try{
+      //Generate a new id and table values for a new ingredient
+      const body = JSON.stringify({email});
+        fetch('https://project-3-09m-server.onrender.com/login_info', {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json" },
+        body: body
+      })
+      .then(response => response.json())
+      .then(response=> {
+        console.log(response);
+      })
+    }
+    catch(err){
+      console.log("Error Message");
+      console.log('Network error:', err.message);
+    }
+  }
+
   return (
     <div>
       <h2 className='Title'>Manager View</h2>
@@ -404,6 +488,9 @@ function Manager() {
           <button onClick={handleIngredientItemAdd.bind(this, selectedingredientName, selectedPrice, selectedQuantity)}>Add Ingredient</button>
           <button onClick={handleIngredientItemUpdate.bind(this, selectedPrice, selectedQuantity, selectedingredientName)}>Update Ingredient</button>
           <button onClick={handleIngredientItemDelete.bind(this, selectedingredientName)}>Delete Ingredient</button>
+          <button onClick={handleUserAdd.bind(this, selectedEmail, selectedRole)}>Add User</button>
+          <button onClick={handleUserUpdate.bind(this, selectedEmail, selectedRole)}>Update User</button>
+          <button onClick={handleUserDelete.bind(this, selectedEmail)}>Delete User</button>
         </div>
 
         <div className="ingredientColumn">
@@ -434,6 +521,26 @@ function Manager() {
               type="text"
               value={selectedQuantity}
               onChange={e => setSelectedQuantity(e.target.value)}
+            />
+          </div>
+
+          <div className="TextboxContainer">
+            <label className="TextboxLabel" htmlFor="RoleTextboxes">Email</label>
+            <input
+              id="RoleTextbox"
+              type="text"
+              value={selectedEmail}
+              onChange={e => setSelectedEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="TextboxContainer">
+            <label className="TextboxLabel" htmlFor="RoleTextboxes">Role</label>
+            <input
+              id="RoleTextbox"
+              type="text"
+              value={selectedRole}
+              onChange={e => setSelectedRole(e.target.value)}
             />
           </div>
         </div>
