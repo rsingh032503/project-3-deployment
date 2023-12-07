@@ -577,6 +577,37 @@ function Manager() {
   return (
     <div>
       <h2 className='Title'>Manager View</h2>
+      <h3>User Roles</h3>
+      <div className='ContentContainer'>
+        <div className="ButtonColumn">
+          <button onClick={handleUserAdd.bind(this, selectedEmail, selectedRole)}>Add User</button>
+          <button onClick={handleUserUpdate.bind(this, selectedEmail, selectedRole)}>Update User</button>
+          <button onClick={handleUserDelete.bind(this, selectedEmail)}>Delete User</button>
+        </div>
+
+        <div className="ingredientColumn">
+          <div className="TextboxContainer">
+              <label className="TextboxLabel" htmlFor="RoleTextboxes">Email</label>
+              <input
+                id="RoleTextbox"
+                type="text"
+                value={selectedEmail}
+                onChange={e => setSelectedEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="TextboxContainer">
+              <label className="TextboxLabel" htmlFor="RoleTextboxes">Role</label>
+              <input
+                id="RoleTextbox"
+                type="text"
+                value={selectedRole}
+                onChange={e => setSelectedRole(e.target.value)}
+              />
+            </div>
+        </div>
+      </div>
+      
       <h3>Inventory</h3>
       <div className="ContentContainer">
         <table className="ingredientsTable">
@@ -601,9 +632,6 @@ function Manager() {
           <button onClick={handleIngredientItemAdd.bind(this, selectedingredientName, selectedPrice, selectedQuantity)}>Add Ingredient</button>
           <button onClick={handleIngredientItemUpdate.bind(this, selectedPrice, selectedQuantity, selectedingredientName)}>Update Ingredient</button>
           <button onClick={handleIngredientItemDelete.bind(this, selectedingredientName)}>Delete Ingredient</button>
-          <button onClick={handleUserAdd.bind(this, selectedEmail, selectedRole)}>Add User</button>
-          <button onClick={handleUserUpdate.bind(this, selectedEmail, selectedRole)}>Update User</button>
-          <button onClick={handleUserDelete.bind(this, selectedEmail)}>Delete User</button>
         </div>
 
         <div className="ingredientColumn">
@@ -634,26 +662,6 @@ function Manager() {
               type="text"
               value={selectedQuantity}
               onChange={e => setSelectedQuantity(e.target.value)}
-            />
-          </div>
-
-          <div className="TextboxContainer">
-            <label className="TextboxLabel" htmlFor="RoleTextboxes">Email</label>
-            <input
-              id="RoleTextbox"
-              type="text"
-              value={selectedEmail}
-              onChange={e => setSelectedEmail(e.target.value)}
-            />
-          </div>
-
-          <div className="TextboxContainer">
-            <label className="TextboxLabel" htmlFor="RoleTextboxes">Role</label>
-            <input
-              id="RoleTextbox"
-              type="text"
-              value={selectedRole}
-              onChange={e => setSelectedRole(e.target.value)}
             />
           </div>
         </div>
