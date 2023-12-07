@@ -29,7 +29,8 @@ const UserTypeNavBar = () => {
      * @returns {void}
      */
     useEffect(() => {
-        fetch('http://localhost:3000/login_info')
+        // fetch('http://localhost:3000/login_info')
+        fetch('https://project-3-09m-server.onrender.com/login_info')
           .then(response => response.json())
           .then(data => changeRoleState(data.login_info))
           .then(() => setLoading(false))
