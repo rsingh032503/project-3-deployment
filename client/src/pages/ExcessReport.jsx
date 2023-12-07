@@ -24,7 +24,7 @@ function ExcessReport() {
     const excessStart = new URLSearchParams(window.location.search).get('start');
 
     if (excessStart) {
-        fetch(`http://localhost:3000/excess-report?start=${excessStart}`) // http://localhost:3000
+        fetch(`https://project-3-09m-server.onrender.com/excess-report?start=${excessStart}`) // http://localhost:3000
             .then(response => response.json())
             .then(data => setExcessIngredients(data.excessIngredients))
             .catch(error => console.error('Error fetching excess report:', error));
