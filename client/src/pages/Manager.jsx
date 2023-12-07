@@ -56,7 +56,7 @@ function Manager() {
       .then(data => setJoinTable(data.ingredient_menu_item_join_table))
       .catch(error => console.error('Error:', error));
 
-    fetch('http://localhost:3000/login_info')
+    fetch('https://project-3-09m-server.onrender.com/login_info')
     .then(response => response.json())
     .then(data => setLoginInfos(data.login_info))
     .catch(error => console.error('Error:', error));
@@ -495,7 +495,7 @@ function Manager() {
       const id = Math.max(...emailIDs) + 1;
       emailIDs.push(id);
       const body = JSON.stringify({id, email, role});
-
+      console.log(emailIDs);
       console.log(id);
       console.log(email); 
       console.log(role);
