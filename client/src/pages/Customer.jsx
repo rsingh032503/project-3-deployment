@@ -236,6 +236,15 @@ function Customer() {
     return (
         <div>
             <h2 style={{ fontSize: `${customerViewFontSize}px` }} className='Title'data-translate>Customer View</h2>
+            <div className="buttons">
+              <button id="language" onClick={handleLanguageChange}>
+                  {language === 'es' ? 'English' : 'Español'}
+              </button>
+              <div className="right-buttons">
+                <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+                <button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
+              </div>
+            </div>
             <h3 className='DrinkTitle'>
                 <p style={{ fontSize: `${drinkFontSize}px` }} data-translate>Drinks</p>
                 <button className='toCart'>
@@ -253,11 +262,6 @@ function Customer() {
                     </Link>
                 ))}
             </div>
-            <button onClick={handleLanguageChange}>
-                {language === 'es' ? 'English' : 'Español'}
-            </button>
-            <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
-			<button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
         </div>
     );
 }

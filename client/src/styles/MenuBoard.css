@@ -24,6 +24,14 @@
   margin-bottom: 100px; /* Adjust as needed */
 }
 
+.right-buttons {
+  align-items: right;
+  justify-content: right;
+  gap: 10px;
+  padding-right: 30px;
+  padding-bottom: 30px;
+}
+
 /* .weather-container {
   display: flex;
 } */
