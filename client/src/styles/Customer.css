@@ -29,6 +29,7 @@
     column-gap: 2%;
     row-gap: 2%;
     width: 100%;
+    padding-bottom: 20px;
 }
 
 .itemLink{
@@ -40,4 +41,15 @@
 .item {
     padding-top: 1rem;
     padding-bottom: 0px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.right-buttons {
+    display: flex;
+    gap: 10px;
+    padding-right: 30px;
 }

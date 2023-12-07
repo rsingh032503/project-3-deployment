@@ -144,6 +144,10 @@ function MenuBoard() {
     	<h1 className="Title" id="homepage" data-translate>
       		Welcome to Sharetea!
     	</h1>
+		<div className="right-buttons">
+            <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+            <button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
+        </div>
       	{menuItemsData && (
         	<div className="menu-items-container">
             	{menuItemsData.menu_item.map(item => (
@@ -171,8 +175,8 @@ function MenuBoard() {
 				</div>
 			))}
 			</div>
-			<FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
-			<button onClick={handleFontSizeDecrease}>Decrease Font Size</button>
+			{/* <FontSizeIncreaser onFontSizeChange={handleFontSizeChange} />
+			<button onClick={handleFontSizeDecrease}>Decrease Font Size</button> */}
 		</div>
 		)}     
     	</>
